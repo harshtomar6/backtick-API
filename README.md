@@ -6,7 +6,7 @@ REAL TIME POST REFERENCE
 
 This document explains how to add a post and like a particular post, ALL REAL-TIME.
 
-To see it in action, Open [] in two seperate windows and try adding a new post or like existing one.
+To see it in action, Open [project link](https://backtick-api.herokuapp.com/) in two seperate windows and try adding a new post or like existing one.
 
 Events to listen in client side
 ================================
