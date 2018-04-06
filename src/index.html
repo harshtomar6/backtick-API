@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Hello</h1>
+
+  <input type="text" id="text">
+  <button onclick="clicked()">Add new Post</button>
+
+  <div id="msg">
+    
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    var msg = document.getElementById('msg');
+
+    socket.on('new-post', function(data){
+      appendPost(msg, data.text, data.postedAt, data._id, data.likes);
+    });
+
+    socket.on('post-liked', function(data){
+      console.log(data);
+      let span = document.getElementById('span'+data._id);
+      span.innerText = 'Likes: '+data.likes;
+    });
+
+
+    fetch('/post/test')
+      .then(res => {
+        if(!res.ok)
+          throw 'Internal Server Error'
+
+        return res.json()
+      })
+      .then(res => {
+        if(res.data.length > 0){
+          for(var i=0;i<res.data.length;i++){
+            appendPost(msg, res.data[i].text, res.data[i].postedAt, res.data[i]._id, res.data[i].likes);      
+          }
+        }
+      })
+      .catch(err => console.log(err));
+
+    function append(parent, element, text){
+      var ele = document.createElement(element);
+      var text = document.createTextNode(text);
+      ele.appendChild(text);
+      parent.appendChild(ele);
+      return ele;
+    }
+
+    function appendPost(parent, text, postedAt, _id, likes){
+      append(parent, 'p', text);
+      append(parent, 'p', postedAt);
+      let ele = append(parent, 'button', 'Like');
+      ele.setAttribute('id', _id);
+      ele.setAttribute('onclick', 'likePost(this.getAttribute("id"))');
+      let span = append(parent, 'span', 'Likes: '+likes);
+      span.setAttribute('id', 'span'+_id);
+    }
+
+    function clicked(){
+      var text = document.getElementById('text').value;
+
+      socket.emit('add-post', {text: text});
+    }
+
+    function likePost(id){
+      socket.emit('like-post', id);
+    }
+  </script>
+</body>
+</html>
