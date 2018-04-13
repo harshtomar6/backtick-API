@@ -29,9 +29,21 @@ let getStudent = (id, callback) => {
 
 // Add a New Student
 let addStudent = (data, callback) => {
-  let student = new Student(data);
-
-  student.save((err, success) => callback(err, success));
+  Student.findOne({email: data.email.toLowerCase()}, (err, found) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(found)
+      return callback('Email Already Registered', 400, null);
+    else{
+      let student = new Student(data);
+      student.save((err, success) => {
+        if(err)
+          return callback(err, 500, null);
+        else
+          return callback(null, 200, student);
+      });
+    }
+  });
 }
 
 // Update Information

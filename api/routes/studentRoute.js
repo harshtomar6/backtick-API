@@ -10,6 +10,13 @@ router.use(function(req, res, next) {
   next();
 });
 
+router.use(function(req, res, next){
+  if(req.query.key === 'asdjkawdioadjskdsadlasd')
+    next();
+  else
+    res.status(400).json({err: 'Please enter valid key', data: null});
+});
+
 // GET '/student' route
 router.get('/', (req, res, next) => {
   studentController.getAllStudents((err, students) => {
@@ -22,11 +29,8 @@ router.get('/', (req, res, next) => {
 
 // POST '/student' route
 router.post('/', (req, res, next) => {
-  studentController.addStudent(req.body, (err, success) => {
-    if(err)
-      res.status(500).json({err: err, data: null});
-    else
-      res.status(200).json({err: null, data: success});
+  studentController.addStudent(req.body, (err, status, success) => {
+    res.status(status).json({err: err, data: success});
   });
 });
 

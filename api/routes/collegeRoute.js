@@ -31,35 +31,42 @@ router.post('/', (req, res, next) => {
 
 // '/college/:collegeId' GET Route
 router.get('/:collegeId', (req, res, next) => {
-  collegeController.getCollege(req.params.collegeId, (err, college) => {
-    if(err)
-      res.status(500).json({err: err, data: null});
-    else
-      res.status(200).json({err: null, data: college});
+  collegeController.getCollege(req.params.collegeId, (err, status, college) => {
+    res.status(status).json({err: err, data: college});
   });
 });
 
-// '/college/department/:collegeId' GET route
-router.get('/department/:collegeId', (req, res, next) => {
-
-});0
-
-// '/college/class/:collegeId' GET route
-router.get('/class/:collegeId', (req, res, next) => {
-
+// '/college/:collegeId/department/' GET route
+router.get('/:collegeId/department', (req, res, next) => {
+  collegeController.getCollegeDepartments(req.params.collegeId, (err, status, departments) => {
+    res.status(status).json({err:err, data: departments})
+  });
 });
 
-// '/college/student/:collegeId' GET route
-router.get('/student/:collegeId', (req, res, next) => {
-
+// '/college/:collegeId/class' GET route
+router.get('/:collegeId/class', (req, res, next) => {
+  collegeController.getCollegeClasses(req.params.collegeId, (err, status, classes) => {
+    res.status(status).json({err: err, data: classes});
+  });
 });
 
-// '/college/staff/:collegeId' GET route
-router.get('/staff/:collegeId', (req, res, next) => {
+// '/college/:collegeId/student' GET route
+router.get('/:collegeId/student', (req, res, next) => {
+  collegeController.getCollegeStudents(req.params.collegeId, (err, status, classes) => {
+    res.status(status).json({err: err, data: success});
+  });
+});
+
+// '/college/:collegeId/staff' GET route
+router.get('/:collegeId/staff', (req, res, next) => {
 
 });
 
 // POST 'college/:collegeId/student/:studentId/' route to join a college
-//router.post('/:collegeId/')
+router.post('/:collegeId/student/:studentId', (req, res, next) => {
+  collegeController.joinCollege(req.params.collegeId, req.params.studentId, (err, status, success) => {
+    res.status(status).json({err: err, success: success});
+  })
+});
 
 module.exports = router;

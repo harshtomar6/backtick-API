@@ -29,10 +29,10 @@ let classSchema = mongoose.Schema({
 
 let studentSchema = mongoose.Schema({
   name: {type: String, required: true},
-  email: {type: String, default: 'none'},
+  email: {type: String, default: 'none', unique: true},
   phone: {type: String, default: 'none'},
   photoURL: {type: String, default: 'none'},
-  providerData: {type: String, default: 'email'},
+  providerData: {type: Array, default: ['email']},
   regNo: {type: String, default: 'none'},
   academicYear: {type: String, default: 'none'},
   isFresher: {type: Boolean, default: true},
