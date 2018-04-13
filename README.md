@@ -1,6 +1,25 @@
 BACKTICK API
 ============
 
+This is the official API of BACKTICK APP.
+
+Documentation Reference
+-----------------------
+There are basic following resources - 
+* College
+* Department
+* Class
+* Student
+* Staff
+* Post
+* Comment
+* Announcement
+
+This API follows REST terminology.
+
+Yo
+
+
 REAL TIME POST REFERENCE
 ------------------------
 

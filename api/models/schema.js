@@ -28,7 +28,7 @@ let classSchema = mongoose.Schema({
 });
 
 let studentSchema = mongoose.Schema({
-  name: {type: String, required: true},
+  name: {type: String, default: 'none'},
   email: {type: String, default: 'none', unique: true},
   phone: {type: String, default: 'none'},
   photoURL: {type: String, default: 'none'},

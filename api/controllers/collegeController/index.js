@@ -9,7 +9,6 @@ let Department = mongoose.model('Department', schema.departmentSchema);
 let Class = mongoose.model('Class', schema.classSchema);
 let Student = mongoose.model('Student', schema.studentSchema);
 
-
 // Get All Colleges
 let getAllColleges = callback => {
   College.find({}, (err, colleges) => {
@@ -88,7 +87,17 @@ let getCollegeClasses = (collegeId, callback) => {
 }
 
 // Get College Students
-
+let getCollegeStudents = (collegeId, callback) => {
+  if(!ObjectId.isValid(collegeId))
+    return callback('Invalid CollegeId', 400, null);
+  
+  Student.find({}, (err, students) => {
+    if(err)
+      return callback(err, 500, null);
+    else
+      return callback(null, 200, students); 
+  });
+}
 
 // Join College
 let joinCollege = (collegeId, studentId, callback) => {
@@ -119,6 +128,7 @@ let joinCollege = (collegeId, studentId, callback) => {
     }
   })
 }
+
 module.exports = {
   getAllColleges,
   getCollege,
@@ -127,5 +137,5 @@ module.exports = {
   joinCollege,
   getCollegeDepartments,
   getCollegeClasses,
-  
+  getCollegeStudents
 }
