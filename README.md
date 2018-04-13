@@ -17,7 +17,7 @@ There are basic following resources -
 
 This API follows REST terminology.
 
-Yo
+You can view endpoints of different resources in thier respective folders
 
 
 REAL TIME POST REFERENCE

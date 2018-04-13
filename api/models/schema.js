@@ -29,7 +29,7 @@ let classSchema = mongoose.Schema({
 
 let studentSchema = mongoose.Schema({
   name: {type: String, default: 'none'},
-  email: {type: String, default: 'none', unique: true},
+  email: {type: String, default: 'none'},
   phone: {type: String, default: 'none'},
   photoURL: {type: String, default: 'none'},
   providerData: {type: Array, default: ['email']},

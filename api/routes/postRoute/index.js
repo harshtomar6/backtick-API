@@ -1,6 +1,6 @@
 let express = require('express');
 let router = express.Router();
-let postController = require('./../controllers/postController');
+let postController = require('./../../controllers/postController');
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

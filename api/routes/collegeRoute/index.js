@@ -1,7 +1,7 @@
 // Dependencies
 let express = require('express');
 let router = express.Router();
-let collegeController = require('./../controllers/collegeController');
+let collegeController = require('./../../controllers/collegeController');
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
