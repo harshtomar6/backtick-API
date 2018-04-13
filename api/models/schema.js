@@ -1,5 +1,6 @@
 // Dependencies
 let mongoose = require('mongoose');
+let config = require('./../../config');
 
 let collegeSchema = mongoose.Schema({
   name: {type: String, required: true},
@@ -29,7 +30,7 @@ let classSchema = mongoose.Schema({
 
 let studentSchema = mongoose.Schema({
   name: {type: String, default: 'none'},
-  email: {type: String, default: 'none'},
+  email: {type: String, default: 'none', unique: config.env === 'production' ? true : false},
   phone: {type: String, default: 'none'},
   photoURL: {type: String, default: 'none'},
   providerData: {type: Array, default: ['email']},

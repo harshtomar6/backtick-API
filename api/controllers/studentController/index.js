@@ -2,6 +2,7 @@
 let mongoose = require('mongoose');
 let schema = require('./../../models/schema');
 const { ObjectId } = require('mongodb');
+let config = require('./../../../config');
 
 // Model
 let Student = mongoose.model('Student', schema.studentSchema);
@@ -29,21 +30,31 @@ let getStudent = (id, callback) => {
 
 // Add a New Student
 let addStudent = (data, callback) => {
-  Student.findOne({email: data.email.toLowerCase()}, (err, found) => {
-    if(err)
-      return callback(err, 500, null);
-    //else if(found)
-      //return callback('Email Already Registered', 400, null);
-    else{
-      let student = new Student(data);
-      student.save((err, success) => {
-        if(err)
-          return callback(err, 500, null);
-        else
-          return callback(null, 200, student);
-      });
-    }
-  });
+  if(config.env === 'production')
+    Student.findOne({email: data.email.toLowerCase()}, (err, found) => {
+      if(err)
+        return callback(err, 500, null);
+      else if(found)
+        return callback('Email Already Registered', 400, null);
+      else{
+        let student = new Student(data);
+        student.save((err, success) => {
+          if(err)
+            return callback(err, 500, null);
+          else
+            return callback(null, 200, student);
+        });
+      }
+    });
+  else{
+    let student = new Student(data);
+    student.save((err, success) => {
+      if(err)
+        return callback(err, 500, null);
+      else
+        return callback(null, 200, success);
+    })
+  }
 }
 
 // Update Information
