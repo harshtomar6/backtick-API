@@ -32,8 +32,8 @@ let addStudent = (data, callback) => {
   Student.findOne({email: data.email.toLowerCase()}, (err, found) => {
     if(err)
       return callback(err, 500, null);
-    else if(found)
-      return callback('Email Already Registered', 400, null);
+    //else if(found)
+      //return callback('Email Already Registered', 400, null);
     else{
       let student = new Student(data);
       student.save((err, success) => {
