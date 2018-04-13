@@ -40,7 +40,8 @@ let studentSchema = mongoose.Schema({
   classId: {type: String, required: true, default: 'not joined'},
   departmentId: {type: String, required: true, default: 'not joined'},
   collegeId: {type: String, required: true, default: 'not joined'},
-  isCR: {type: Boolean, requird: true, default: false}
+  isCR: {type: Boolean, requird: true, default: false},
+  termsAndConditions: {type: Boolean, default: false}
 });
 
 let staffSchema = mongoose.Schema({
