@@ -8,6 +8,8 @@ let socketio = require('socket.io');
 let homeRoute = require('./api/routes/homeRoute');
 let postRoute = require('./api/routes/postRoute');
 let postController = require('./api/controllers/postController');
+let collegeRoute = require('./api/routes/collegeRoute');
+let studentRoute = require('./api/routes/studentRoute');
 let config = require('./config');
 
 // define PORT
@@ -26,6 +28,8 @@ app.use(bodyParser.json());
 // Use Routes
 app.use('/', homeRoute);
 app.use('/post', postRoute);
+app.use('/college', collegeRoute);
+app.use('/student', studentRoute);
 
 //Config WebSockets;
 let server = require('http').Server(app);

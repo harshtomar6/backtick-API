@@ -4,6 +4,12 @@ let mongoose = require('mongoose');
 let collegeSchema = mongoose.Schema({
   name: {type: String, required: true},
   address: {type: String, required: true},
+  phone: {type: String, required: true},
+  website: {type: String, required: true},
+  location: {
+    lat: {type: Number, required: true},
+    lon: {type: Number, required: true}
+  },
   meta: {type: Object, required: true}, // Contains info about college
 });
 
@@ -23,11 +29,16 @@ let classSchema = mongoose.Schema({
 
 let studentSchema = mongoose.Schema({
   name: {type: String, required: true},
-  email: {type: String, required: true},
-  phone: {type: String, required: true},
-  classId: {type: String, required: true},
-  departmentId: {type: String, required: true},
-  collegeId: {type: String, required: true},
+  email: {type: String, default: 'none'},
+  phone: {type: String, default: 'none'},
+  photoURL: {type: String, default: 'none'},
+  providerData: {type: String, default: 'email'},
+  regNo: {type: String, default: 'none'},
+  academicYear: {type: String, default: 'none'},
+  isFresher: {type: Boolean, default: true},
+  classId: {type: String, required: true, default: 'not joined'},
+  departmentId: {type: String, required: true, default: 'not joined'},
+  collegeId: {type: String, required: true, default: 'not joined'},
   isCR: {type: Boolean, requird: true, default: false}
 });
 
@@ -41,13 +52,24 @@ let staffSchema = mongoose.Schema({
 });
 
 let postSchema = mongoose.Schema({
-  ownerid: {type: String, required: true},
+  ownerId: {type: String, required: true},
+  classId: {type: String, required: true},
+  departmentId: {type: String, required: true},
+  collegeId: {type: String, required: true},
   postedBy: {type: String, required: true}, // Should accept either Student or Staff
   likes: {type: Array, required: true, default: []}, // Array of Object id's of either Student or Staff 
+  comments: {type: Array, required: true, default: []}, // Array of Comment id's
   text: {type: String, required: true}, // Text
   attachment: {type: Array, default: []}, // Array of {category: string, url: String}
   timestamp: {type: Date, default: Date.now},
-  level: {type: Number, required: true, default: 10}
+  level: {type: Number, required: true, default: 10} // Levels Should accept one of these 10 | 20 | 30
+});
+
+let commentSchema = mongoose.Schema({
+  text: {type: String, required: true},
+  ownerid: {type: String, required: true},
+  parentId: {type: String, required: true, default: 'none'},
+  childrens: {type: Array, required: true, default: []} // Array of Comment Id's
 });
 
 let announcementSchema = mongoose.Schema({
@@ -72,5 +94,6 @@ module.exports = {
   staffSchema,
   postSchema,
   announcementSchema,
+  commentSchema,
   testPost
 }
