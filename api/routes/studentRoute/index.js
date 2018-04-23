@@ -13,6 +13,7 @@ router.use(function(req, res, next) {
 
 // GET '/student' route
 router.get('/', (req, res, next) => {
+  console.log(req.get('host'));
   studentController.getAllStudents((err, students) => {
     if(err)
       res.status(500).json({err: err, data: null});

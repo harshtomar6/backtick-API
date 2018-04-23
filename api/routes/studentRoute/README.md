@@ -19,7 +19,7 @@ An Example to communicate with those routes is:
     headers: {
       'Content-Type' : 'application/json',
       'X-Access-Token' : `your token`,
-      'X-Access-Key' : `your key`
+      'X-Key' : `your key`
     }
   })
 ```
@@ -56,6 +56,7 @@ Retrieves all the students in an array
             "collegeId": "5ad08542a6620251ac0a38c1",
             "isCR": false,
             "phoneVerified": false,
+            "emailVerified": false,
             "termsAndConditions": false,
             "_id": "5adc6f7238e92d231cb40ee6",
             "password": "$2a$08$D8bphkTy2TTxmXt15GT35eGbX/7CtgBTJHR/zHEqeyOV0PZlgvpCm",
@@ -77,6 +78,7 @@ Retrieves all the students in an array
             "collegeId": "not joined",
             "isCR": false,
             "phoneVerified": false,
+            "emailVerified": false,
             "termsAndConditions": false,
             "_id": "5adc9b80ed1e72037020e7bf",
             "password": "$2a$08$F30aaKVdNk/vrz7taE9gve5N9j2yiGZD6i6kFIJIelK7Kmz3Vo0x6",
@@ -111,6 +113,7 @@ Adds a new student to database
 | collegeId | String | NO | 'not joined' |
 | isCR | Boolean | NO | false |
 | phoneVerified | Boolean | NO | false|
+| emailVerified | Boolean | NO |false |
 | termsAndConditions | Boolean | NO | false |
 
 
@@ -138,6 +141,7 @@ Adds a new student to database
             "collegeId": "not joined",
             "isCR": false,
             "phoneVerified": false,
+            "emailVerified": false,
             "termsAndConditions": false,
             "_id": "5adc9b80ed1e72037020e7bf",
             "password": "$2a$08$F30aaKVdNk/vrz7taE9gve5N9j2yiGZD6i6kFIJIelK7Kmz3Vo0x6",
@@ -191,6 +195,7 @@ Retrieves information of a particular student
         "collegeId": "5ad08542a6620251ac0a38c1",
         "isCR": false,
         "phoneVerified": false,
+        "emailVerified" : false,
         "termsAndConditions": false,
         "_id": "5adc6f7238e92d231cb40ee6",
         "password": "$2a$08$D8bphkTy2TTxmXt15GT35eGbX/7CtgBTJHR/zHEqeyOV0PZlgvpCm",

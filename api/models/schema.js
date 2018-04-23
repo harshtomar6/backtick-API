@@ -43,6 +43,7 @@ let studentSchema = mongoose.Schema({
   collegeId: {type: String, required: true, default: 'not joined'},
   isCR: {type: Boolean, requird: true, default: false},
   phoneVerified: {type: Boolean, required: true, default: false},
+  emailVerified: {type: Boolean, required: true, default: false},
   termsAndConditions: {type: Boolean, default: false}
 });
 
