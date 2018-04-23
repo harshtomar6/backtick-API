@@ -17,6 +17,20 @@ router.get('/', (req, res, next) => {
   });
 });
 
+// GET '/department/:departmentId/class' route to get all classes in a department
+router.get('/:departmentId/class', config.validateRequest, (req, res, next) => {
+  departmentController.getDepartmentClasses(req.params.departmentId, (err, status, data) => {
+    res.status(status).json({err: err, data: data});
+  });
+});
+
+// GET '/department/:departmentId/student' route to get all students in a department
+router.get('/:departmentId/student', config.validateRequest, (req, res, next) => {
+  departmentController.getDepartmentStudents(req.params.departmentId, (err, status, data) => {
+    res.status(status).json({err: err, data: data});
+  });
+});
+
 // POST '/department/:departmentId/join' route to join a class
 router.post('/:departmentId/join', config.validateRequest, (req, res, next) => {
   departmentController.joinDepartment(req.params.departmentId, req.headers['x-key'], (err, status, data) => {

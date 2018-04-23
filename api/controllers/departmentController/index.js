@@ -7,6 +7,7 @@ const { ObjectId } = require('mongodb');
 let Department = mongoose.model('Department', schema.departmentSchema);
 let College = mongoose.model('College', schema.collegeSchema);
 let Student = mongoose.model('Student', schema.studentSchema);
+let Class = mongoose.model('Class', schema.classSchema);
 
 // Get all deparmtents
 let getAllDepartments = (callback) => {
@@ -56,6 +57,32 @@ let getDepartment = (departmentId, callback) => {
   });
 }
 
+// Get Department Classes
+let getDepartmentClasses = (departmentId, callback) => {
+  if(!ObjectId.isValid(departmentId))
+    return callback('Invalid Department Id', 400, null);
+
+  Class.find({departmentId: departmentId}, (err, classes) => {
+    if(err)
+      return callback(err, 500, null);
+    else
+      return callback(null, 200, classes);
+  })
+}
+
+// Get Department Students
+let getDepartmentStudents = (departmentId, callback) => {
+  if(!ObjectId.isValid(departmentId))
+    return callback('Invalid Department Id', 400, null);
+
+  Student.find({departmentId: departmentId}, (err, students) => {
+    if(err)
+      return callback(err, 500, null);
+    else
+      return callback(null, 200, students);
+  })
+}
+
 // Join Department
 let joinDepartment = (departmentId, studentId, callback) => {
   if(!ObjectId.isValid(departmentId) || !ObjectId.isValid(studentId))
@@ -89,6 +116,8 @@ let joinDepartment = (departmentId, studentId, callback) => {
 module.exports = {
   getAllDepartments,
   getDepartment,
+  getDepartmentClasses,
+  getDepartmentStudents,
   addDepartment,
   joinDepartment
 }

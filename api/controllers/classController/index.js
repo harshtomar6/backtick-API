@@ -43,7 +43,7 @@ let addClass = (collegeId, departmentId, data, callback) => {
             let c = new Class(data);
             c.collegeId = collegeId;
             c.departmentId = departmentId;
-            c.classCode = data.name.split(' ').join('_').toUpperCase();
+            c.classCode = getClassCode(college.name, department.name, data.name);
             c.save((err, success) => {
               if(err)
                 return callback(err, 500, null);
@@ -68,6 +68,19 @@ let getClass = (classId, callback) => {
       return callback(null, 200, success);
   });
 }
+
+// Get all students of a class
+let getClassStudents = (classId, callback) => {
+  if(!ObjectId.isValid(classId))
+    return callback('Invalid Class Id', 400, null);
+  
+  Student.find({classId: classId}, (err, success) => {
+    if(err)
+      return callback(err, 500, null);
+    else
+      return callback(null, 200, success);
+  });
+} 
 
 // Join Class
 let joinClass = (classId, studentId, callback) => {
@@ -99,10 +112,59 @@ let joinClass = (classId, studentId, callback) => {
   })
 }
 
+// Join Class by class code
+let joinClassByCode = (code, studentId, callback) => {
+  Class.findOne({classCode: code}, (err, class_) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(class_ == null)
+      return callback('No Class Found', 404, null);
+    else{
+      Student.findOne({_id: studentId}, (err, student) => {
+        if(err)
+          return callback(err, 500, null);
+        else if (student == null)
+          return callback('No Student Found', 404, null);
+        else{
+          student.classId = class_._id;
+          student.departmentId = class_.departmentId;
+          student.collegeId = class_.collegeId;
+          student.save((err, success) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, success);
+          });
+        }
+      });
+    }
+  })
+}
+
+let getClassCode = (collegeName, departmentName, className) => {
+  let collegeInitials = '', departmentInitails = '', classInitials = '';
+  
+  collegeName.split(' ').forEach(element => {
+    collegeInitials += element.split('')[0].toUpperCase();
+  });
+
+  departmentName.split(' ').forEach(element => {
+    departmentInitails += element.split('')[0].toUpperCase();
+  })
+
+  className.split(' ').forEach(element => {
+    classInitials += element.split('')[0].toUpperCase();
+  });
+
+  return 'BT_'+collegeInitials+'_'+departmentInitails+'_'+classInitials
+}
+
 
 module.exports = {
   getAllClasses,
   getClass,
   addClass,
-  joinClass
+  getClassStudents,
+  joinClass,
+  joinClassByCode
 }
