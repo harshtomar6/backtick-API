@@ -8,6 +8,7 @@ let College = mongoose.model('College', schema.collegeSchema);
 let Department = mongoose.model('Department', schema.departmentSchema);
 let Class = mongoose.model('Class', schema.classSchema);
 let Student = mongoose.model('Student', schema.studentSchema);
+let Post = mongoose.model('Post', schema.postSchema);
 
 // Get All Colleges
 let getAllColleges = callback => {
@@ -65,7 +66,7 @@ let getCollegeDepartments = (collegeId, callback) => {
   if(!ObjectId.isValid(collegeId))
     return callback('Invalid CollegeId', 400, null);
   
-  Department.find({}, (err, deparments) => {
+  Department.find({collegeId: collegeId}, (err, departments) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -78,7 +79,7 @@ let getCollegeClasses = (collegeId, callback) => {
   if(!ObjectId.isValid(collegeId))
     return callback('Invalid CollegeId', 400, null);
   
-  Class.find({}, (err, classes) => {
+  Class.find({collegeId: collegeId}, (err, classes) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -96,6 +97,19 @@ let getCollegeStudents = (collegeId, callback) => {
       return callback(err, 500, null);
     else
       return callback(null, 200, students); 
+  });
+}
+
+// Get College Posts
+let getCollegePosts = (collegeId, callback) => {
+  if(!ObjectId.isValid(collegeId))
+    return callback('Invalid College Id', 400, null);
+  
+  Post.find({collegeId: collegeId}, (err, posts) => {
+    if(err)
+      return callback(err, 500, null);
+    else
+      return callback(null, 200, posts);
   });
 }
 
@@ -137,5 +151,6 @@ module.exports = {
   joinCollege,
   getCollegeDepartments,
   getCollegeClasses,
-  getCollegeStudents
+  getCollegeStudents,
+  getCollegePosts
 }

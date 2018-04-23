@@ -1,6 +1,6 @@
 // Dependencies
-let mongoose = require('mongoose');
-let config = require('./../../config');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
 
 let collegeSchema = mongoose.Schema({
   name: {type: String, required: true},
@@ -15,23 +15,24 @@ let collegeSchema = mongoose.Schema({
 });
 
 let departmentSchema = mongoose.Schema({
-  name: {type: String, required: true},
+  name: {type: String, required: true, unique: true},
   collegeId: {type: String, required: true},
-  meta: {type: Object, required: true}
+  meta: {type: Object, required: true, default: {}}
 });
 
 let classSchema = mongoose.Schema({
-  name: {type: String, required: true},
+  name: {type: String, required: true, unique: true},
   departmentId: {type: String, required: true},
   collegeId: {type: String, required: true},
-  classCode: {type: String, required: true},
-  meta: {type: Object, required: true}
+  classCode: {type: String, required: true, unique: true},
+  meta: {type: Object, required: true, default: {}}
 });
 
 let studentSchema = mongoose.Schema({
   name: {type: String, default: 'none'},
-  email: {type: String, default: 'none', unique: config.env === 'production' ? true : false},
+  email: {type: String, default: 'none'},
   phone: {type: String, default: 'none'},
+  password: {type: String, required: true},
   photoURL: {type: String, default: 'none'},
   providerData: {type: Array, default: ['email']},
   regNo: {type: String, default: 'none'},
@@ -41,6 +42,7 @@ let studentSchema = mongoose.Schema({
   departmentId: {type: String, required: true, default: 'not joined'},
   collegeId: {type: String, required: true, default: 'not joined'},
   isCR: {type: Boolean, requird: true, default: false},
+  phoneVerified: {type: Boolean, required: true, default: false},
   termsAndConditions: {type: Boolean, default: false}
 });
 
@@ -87,6 +89,15 @@ let testPost = mongoose.Schema({
   postedAt: {type: Date, default: Date.now},
   likes: {type: Number, default: 0}
 })
+
+// Hash methods for Students
+studentSchema.methods.genHash = (password) => {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+}
+
+studentSchema.methods.compareHash = function(password){
+  return bcrypt.compareSync(password, this.password);
+}
 
 module.exports = {
   collegeSchema,

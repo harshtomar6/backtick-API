@@ -1,22 +1,27 @@
 // Dependencies
-let express = require('express');
-let app = express();
-let bodyParser = require('body-parser');
-let mongoose = require('mongoose');
-let logger = require('morgan');
-let socketio = require('socket.io');
-let homeRoute = require('./api/routes/homeRoute');
-let postRoute = require('./api/routes/postRoute');
-let postController = require('./api/controllers/postController');
-let collegeRoute = require('./api/routes/collegeRoute');
-let studentRoute = require('./api/routes/studentRoute');
-let config = require('./config');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const logger = require('morgan');
+const socketio = require('socket.io');
+const dotenv = require('dotenv');
+const homeRoute = require('./api/routes/homeRoute');
+const postRoute = require('./api/routes/postRoute');
+const postController = require('./api/controllers/postController');
+const collegeRoute = require('./api/routes/collegeRoute');
+const studentRoute = require('./api/routes/studentRoute');
+const departmentRoute = require('./api/routes/departmentRoute');
+const classRoute = require('./api/routes/classRoute');
+
+// Load .env variables
+dotenv.load();
 
 // define PORT
 const PORT = process.env.PORT || 3000;
 
 // Connect to Database
-mongoose.connect(config.DATABASE_URI);
+mongoose.connect(process.env.DATABASE_URI);
 
 // Use Logger
 app.use(logger('dev'));
@@ -30,6 +35,8 @@ app.use('/', homeRoute);
 app.use('/post', postRoute);
 app.use('/college', collegeRoute);
 app.use('/student', studentRoute);
+app.use('/class', classRoute);
+app.use('/department', departmentRoute);
 
 //Config WebSockets;
 let server = require('http').Server(app);

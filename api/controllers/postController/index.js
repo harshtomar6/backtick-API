@@ -6,6 +6,7 @@ let schema = require('./../../models/schema');
 let Post = mongoose.model('Post', schema.postSchema);
 let TestPost = mongoose.model('TestPost', schema.testPost);
 let Comment = mongoose.model('Comment', schema.commentSchema);
+let Student = mongoose.model('Student', schema.studentSchema);
 
 // Find all posts
 let getAllPosts = (callback) => {
@@ -25,12 +26,33 @@ let getPostById = (id, callback) => {
 }
 
 // Add new Post
-let addPost = (data, callback) => {
-  let post = new Post(data);
+let addPost = (data, owner, callback) => {
 
-  post.save((err, success) => {
-    return callback(err, success);
-  })
+  Student.findOne({_id: owner})
+    .select('classId collegeId departmentId')
+    .exec((err, student) => {
+      if(err)
+        return callback(err, 500, null);
+      else if(!student)
+        return callback('No Student Found', 404, null);
+      else{
+        if(student.collegeId === 'not joined' || student.departmentId === 'not joined' || student.classId === 'not joined')
+        return callback('Join College, Department and Class first', 400, null);
+      
+        let post = new Post(data);
+        post.ownerId = owner;
+        post.classId = student.classId;
+        post.collegeId = student.collegeId;
+        post.departmentId = student.departmentId;
+
+        post.save((err, success) => {
+          if(err)
+            return callback(err, 500, null);
+          else
+            return callback(null, 200, success);
+        });
+      }  
+    });
 }
 
 // Edit existing Post
@@ -55,7 +77,7 @@ let deletePost = (id, callback) => {
 
 // Get All post of a particular owner
 let getOwnerPosts = (id, callback) => {
-  Post.find({ownerid: id}, (err, posts) => {
+  Post.find({ownerId: id}, (err, posts) => {
     return callback(err, posts);
   })
 }

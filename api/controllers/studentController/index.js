@@ -1,8 +1,8 @@
 // Dependencies
-let mongoose = require('mongoose');
-let schema = require('./../../models/schema');
+const mongoose = require('mongoose');
+const schema = require('./../../models/schema');
 const { ObjectId } = require('mongodb');
-let config = require('./../../../config');
+const auth = require('./../../../auth');
 
 // Model
 let Student = mongoose.model('Student', schema.studentSchema);
@@ -30,7 +30,7 @@ let getStudent = (id, callback) => {
 
 // Add a New Student
 let addStudent = (data, callback) => {
-  if(config.env === 'production')
+  if(process.env.DEVELOPMENT)
     Student.findOne({email: data.email.toLowerCase()}, (err, found) => {
       if(err)
         return callback(err, 500, null);
@@ -38,11 +38,16 @@ let addStudent = (data, callback) => {
         return callback('Email Already Registered', 400, null);
       else{
         let student = new Student(data);
+        if(data.password)
+          student.password = student.genHash(data.password);
+        else
+          student.password = student.genHash('NOPASSWORD');
+
         student.save((err, success) => {
           if(err)
             return callback(err, 500, null);
           else
-            return callback(null, 200, student);
+            return callback(null, 200, auth.generateToken(success));
         });
       }
     });
@@ -55,6 +60,35 @@ let addStudent = (data, callback) => {
         return callback(null, 200, success);
     })
   }
+}
+
+let authenticateUser = (data, callback) => {
+
+}
+
+// FOR SOCIAL MEDIA LOGIN
+let addOrFindStudent = (data, callback) => {
+  Student.findOne({email: data.email.toLowerCase()}, (err, student) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(student){
+      return callback(null, 200, auth.generateToken(student));
+    }
+    else{
+      let student = new Student(data);
+      if(data.password)
+        student.password = student.genHash(data.password);
+      else
+        student.password = student.genHash('NOPASSWORD');
+
+      student.save((err, success) => {
+        if(err)
+          return callback(err, 500, null);
+        else
+          return callback(null, 200, auth.generateToken(success));
+      });
+    }
+  })
 }
 
 // Update Information
@@ -96,6 +130,7 @@ module.exports = {
   getAllStudents,
   getStudent,
   addStudent,
+  addOrFindStudent,
   modifyStudent,
   setCR
 }

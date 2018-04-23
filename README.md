@@ -5,7 +5,7 @@ This is the official API of BACKTICK APP.
 
 Documentation Reference
 -----------------------
-There are basic following resources - 
+**The basic resources are following-** 
 * College
 * Department
 * Class
@@ -17,7 +17,7 @@ There are basic following resources -
 
 This API follows REST terminology.
 
-You can view endpoints of different resources in thier respective folders
+You can view endpoints of different resources in routes folders inside their respective folders
 
 
 REAL TIME POST REFERENCE
