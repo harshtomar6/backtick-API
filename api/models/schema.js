@@ -62,7 +62,7 @@ let postSchema = mongoose.Schema({
   departmentId: {type: String, required: true},
   collegeId: {type: String, required: true},
   postedBy: {type: String, required: true}, // Should accept either Student or Staff
-  likes: {type: Array, required: true, default: []}, // Array of Object id's of either Student or Staff 
+  likes: {type: Array, required: true, default: []}, // Array of Object id's of either Student or Staff and name 
   comments: {type: Array, required: true, default: []}, // Array of Comment id's
   text: {type: String, required: true}, // Text
   attachment: {type: Array, default: []}, // Array of {category: string, url: String}

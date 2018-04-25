@@ -32,7 +32,7 @@ router.post('/', (req, res, next) => {
 // POST '/student/social' route for social media login
 router.post('/social', (req, res, next) => {
   studentController.addOrFindStudent(req.body, (err, status, success) => {
-    res.status(status).json({err: err, data: success});
+      res.status(status).json({err: err, data: success});
   })
 });
 

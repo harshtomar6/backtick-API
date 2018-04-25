@@ -9,7 +9,7 @@ router.use(function(req, res, next) {
   next();
 });
 
-// '/post' route
+// GET '/post' route
 router.get('/', (req, res, next) => {
   postController.getAllPosts((err, data) => {
     if(err)
@@ -31,7 +31,7 @@ router.get('/test', (req, res, next) => {
   })
 });
 
-// '/post/:postid' route
+// GET '/post/:postid' route
 router.get('/:postid', config.validateRequest, (req, res, next) => {
   postController.getPostById(req.params.postid, (err, data) => {
     if(err)
@@ -41,7 +41,7 @@ router.get('/:postid', config.validateRequest, (req, res, next) => {
   })
 });
 
-// '/post' route to create new post
+// POST '/post' route to create new post
 router.post('/', config.validateRequest, (req, res, next) => {
   console.log(req.body);
   postController.addPost(req.body, req.headers['x-key'], (err, status, data) => {
@@ -49,9 +49,16 @@ router.post('/', config.validateRequest, (req, res, next) => {
   });
 });
 
-// '/post/:postid' route to delete post
-router.delete('/:postid', config.validateRequest, (req, res, next) => {
-  postController.deletePost(req.params.postid, (err, data) => {
+// PUT '/post/:postId' route to modify a post
+router.put('/:postId', config.validateRequest, (req, res, next) => {
+  postController.modifyPost(req.params.postId, req.headers['x-key'], req.body, (err, status, success) => {
+    res.status(status).json({err: err, data: success});
+  });
+});
+
+// DELETE '/post/:postid' route to delete post
+router.delete('/:postId', config.validateRequest, (req, res, next) => {
+  postController.deletePost(req.params.postId, (err, data) => {
     if(err)
       res.status(500).json({err: err, data: null});
     else
@@ -59,6 +66,12 @@ router.delete('/:postid', config.validateRequest, (req, res, next) => {
   })
 });
 
+// POST '/post/:postId/like' route to like a post
+router.post('/:postId/like', config.validateRequest, (req, res, next) => {
+  postController.likePost(req.params.postId, req.headers['x-key'], (err, status, success) => {
+    res.status(status).json({err: err, data: success});
+  })
+});
 
 
 module.exports = router;

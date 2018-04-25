@@ -1,6 +1,7 @@
 // Dependencies
-let mongoose = require('mongoose');
-let schema = require('./../../models/schema');
+const mongoose = require('mongoose');
+const schema = require('./../../models/schema');
+const {ObjectId} = require('mongodb');
 
 // Models
 let Post = mongoose.model('Post', schema.postSchema);
@@ -56,8 +57,24 @@ let addPost = (data, owner, callback) => {
 }
 
 // Edit existing Post
-let modifyPost = (id, data, callback) => {
-
+let modifyPost = (id, ownerId, data, callback) => {
+  if(!ObjectId.isValid(id) || !ObjectId.isValid(ownerId))
+    return callback('Invalid Post Id or Owner Id', 400, null);
+  
+  Post.findOne({_id: id, ownerId: ownerId}, (err, post) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!post)
+      return callback('No Post Found', 404, null);
+    else{
+      Post.update({_id: id, ownerId: ownerId}, data, (err, success) => {
+        if(err)
+          return callback(err, 500, null);
+        else
+          return callback(null, 200, success);
+      });
+    }
+  });
 }
 
 // Delete Post
@@ -105,12 +122,49 @@ let getCollegePosts = (id, callback) => {
 
 // Like Post
 let likePost = (id, ownerid, callback) => {
+  if(!ObjectId.isValid(id))
+    return callback('Invalid Post Id', 400, null);
+
   Post.findOne({_id: id}, 'likes', (err, post) => {
     if(err)
-      return callback(err, null);
+      return callback(err, 500, null);
     else if(post == null)
-      return callback('No Post Found', null);
+      return callback('No Post Found', 404, null);
     else{
+      if(post.likes.length === 0){
+        post.likes.push(ownerid);
+        post.save((err, success) => {
+          if(err)
+            return callback(err, 500, null);
+          else
+            return callback(null, 200, success);
+        })  
+      }
+      else{
+        let i=0;
+        post.likes.forEach(element => {
+          i++;
+          if(element == ownerid){
+            post.likes.splice(post.likes.indexOf(ownerid), 1);
+            post.save((err, success) => {
+              if(err)
+                return callback(err, 500, null);
+              else
+                return callback(null, 200, success);
+            })    
+          }
+
+          if(i == post.likes.length){
+            post.likes.push(ownerid);
+            post.save((err, success) => {
+              if(err)
+                return callback(err, 500, null);
+              else
+                return callback(null, 200, success);
+            })
+          }
+        });
+      }
     }
   });
 }
