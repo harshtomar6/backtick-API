@@ -24,7 +24,7 @@ let validateRequest = (req, res, next) => {
           next()
       });
     }catch(err){
-      res.status(500).json({err: 'Something Weird happened', data: null})
+      res.status(500).json({err: 'Cannot Authenticate Access Token', data: null})
     }
   }else{
     res.status(401).json({err: 'Key Or Token Not Found', data: null});

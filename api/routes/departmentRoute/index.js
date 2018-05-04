@@ -38,4 +38,11 @@ router.post('/:departmentId/join', config.validateRequest, (req, res, next) => {
   });
 });
 
+// GET '/department/:departmentId/post' route to get all posts of a department
+router.get('/:departmentId/post', config.validateRequest, (req, res, next) => {
+  departmentController.getDepartmentPosts(req.params.departmentId, req.headers['x-key'], (err, status, data) => {
+    res.status(status).json({err: err, data: data});
+  });
+});
+
 module.exports = router;

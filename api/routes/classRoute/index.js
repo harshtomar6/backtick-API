@@ -38,5 +38,4 @@ router.get('/join/:classCode', config.validateRequest, (req, res, next) => {
   });
 });
 
-
 module.exports = router;

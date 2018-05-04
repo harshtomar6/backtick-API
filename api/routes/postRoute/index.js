@@ -11,11 +11,8 @@ router.use(function(req, res, next) {
 
 // GET '/post' route
 router.get('/', (req, res, next) => {
-  postController.getAllPosts((err, data) => {
-    if(err)
-      res.status(500).json({err: err, data: null});
-    else
-      res.status(200).json({err: null, data: data});
+  postController.getAllPosts((err, status, data) => {
+    res.status(status).json({err: err, data: data});
   });
 });
 
@@ -71,6 +68,16 @@ router.post('/:postId/like', config.validateRequest, (req, res, next) => {
   postController.likePost(req.params.postId, req.headers['x-key'], (err, status, success) => {
     res.status(status).json({err: err, data: success});
   })
+});
+
+// POST '/post/:postId/comment' route to comment on a post
+router.post('/:postId/comment', config.validateRequest, (req, res, next) => {
+  postController.commentOnPost(req.params.postId, {
+      text: req.body.text, 
+      ownerid: req.headers['x-key']
+    }, (err, status, success) => {
+      res.status(status).json({err: err, data: success});
+    });
 });
 
 

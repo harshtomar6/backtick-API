@@ -8,6 +8,7 @@ let Department = mongoose.model('Department', schema.departmentSchema);
 let College = mongoose.model('College', schema.collegeSchema);
 let Student = mongoose.model('Student', schema.studentSchema);
 let Class = mongoose.model('Class', schema.classSchema);
+let Post = mongoose.model('Post', schema.postSchema);
 
 // Get all deparmtents
 let getAllDepartments = (callback) => {
@@ -83,6 +84,35 @@ let getDepartmentStudents = (departmentId, callback) => {
   })
 }
 
+// Get Department Posts
+let getDepartmentPosts = (departmentId, studentId, callback) => {
+  if(!ObjectId.isValid(departmentId))
+    return callback('Invalid Department Id', 400, null);
+
+  Post.find({departmentId: departmentId}, (err, success) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(success.length === 0)
+      return callback(null, 200, success);
+    else{
+
+      let i=0;
+      success.forEach(post => {
+        i++;
+
+        Student.findOne({_id: post.ownerId}, 'name photoUrl', (err, owner) => {
+          if(err)
+            return callback(err, 500, null);
+          else if(!owner)
+            return callback('No Student Found', 404, null);
+          else
+            return callback(null, 200, Object,assign({}, success, {owner}));
+        })
+      });
+    }
+  });
+}
+
 // Join Department
 let joinDepartment = (departmentId, studentId, callback) => {
   if(!ObjectId.isValid(departmentId) || !ObjectId.isValid(studentId))
@@ -118,6 +148,7 @@ module.exports = {
   getDepartment,
   getDepartmentClasses,
   getDepartmentStudents,
+  getDepartmentPosts,
   addDepartment,
   joinDepartment
 }
