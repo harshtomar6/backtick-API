@@ -1,11 +1,8 @@
 // Dependencies
 const mongoose = require('mongoose');
-const schema = require('./../../models/schema');
+const { Student } = require('./../../models');
 const { ObjectId } = require('mongodb');
 const auth = require('./../../../auth');
-
-// Model
-let Student = mongoose.model('Student', schema.studentSchema);
 
 // Get all students
 let getAllStudents = (callback) => {

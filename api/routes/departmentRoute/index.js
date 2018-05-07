@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const config = require('./../../../config');
-const departmentController = require('./../../controllers/departmentController');
+const controller = require('./../../controllers');
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -12,35 +12,35 @@ router.use(function(req, res, next) {
 
 // GET '/department' route
 router.get('/', (req, res, next) => {
-  departmentController.getAllDepartments((err, status, data) => {
+  controller.getAllDepartments((err, status, data) => {
     res.status(status).json({err: err, data: data});
   });
 });
 
 // GET '/department/:departmentId/class' route to get all classes in a department
 router.get('/:departmentId/class', config.validateRequest, (req, res, next) => {
-  departmentController.getDepartmentClasses(req.params.departmentId, (err, status, data) => {
+  controller.getDepartmentClasses(req.params.departmentId, (err, status, data) => {
     res.status(status).json({err: err, data: data});
   });
 });
 
 // GET '/department/:departmentId/student' route to get all students in a department
 router.get('/:departmentId/student', config.validateRequest, (req, res, next) => {
-  departmentController.getDepartmentStudents(req.params.departmentId, (err, status, data) => {
+  controller.getDepartmentStudents(req.params.departmentId, (err, status, data) => {
     res.status(status).json({err: err, data: data});
   });
 });
 
 // POST '/department/:departmentId/join' route to join a class
 router.post('/:departmentId/join', config.validateRequest, (req, res, next) => {
-  departmentController.joinDepartment(req.params.departmentId, req.headers['x-key'], (err, status, data) => {
+  controller.joinDepartment(req.params.departmentId, req.headers['x-key'], (err, status, data) => {
     res.status(status).json({err: err, data: data});
   });
 });
 
 // GET '/department/:departmentId/post' route to get all posts of a department
 router.get('/:departmentId/post', config.validateRequest, (req, res, next) => {
-  departmentController.getDepartmentPosts(req.params.departmentId, req.headers['x-key'], (err, status, data) => {
+  controller.getDepartmentPosts(req.params.departmentId, req.headers['x-key'], (err, status, data) => {
     res.status(status).json({err: err, data: data});
   });
 });

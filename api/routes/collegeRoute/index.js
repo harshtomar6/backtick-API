@@ -1,9 +1,7 @@
 // Dependencies
 const express = require('express');
 const router = express.Router();
-const collegeController = require('./../../controllers/collegeController');
-const departmentController = require('./../../controllers/departmentController');
-const classController = require('./../../controllers/classController');
+const controller = require('./../../controllers');
 const config = require('./../../../config');
 
 router.use(function(req, res, next) {
@@ -14,7 +12,7 @@ router.use(function(req, res, next) {
 
 // '/college' GET route
 router.get('/', (req, res, next) => {
-  collegeController.getAllColleges((err, colleges) => {
+  controller.getAllColleges((err, colleges) => {
     if(err)
       res.status(500).json({err: err, data: null});
     else
@@ -24,7 +22,7 @@ router.get('/', (req, res, next) => {
 
 // '/college' POST route
 router.post('/', config.validateRequest, (req, res, next) => {
-  collegeController.addCollege(req.body, (err, college) => {
+  controller.addCollege(req.body, (err, college) => {
     if(err)
       res.status(500).json({err: err, data: null});
     else
@@ -34,28 +32,28 @@ router.post('/', config.validateRequest, (req, res, next) => {
 
 // '/college/:collegeId' GET Route
 router.get('/:collegeId', config.validateRequest, (req, res, next) => {
-  collegeController.getCollege(req.params.collegeId, (err, status, college) => {
+  controller.getCollege(req.params.collegeId, (err, status, college) => {
     res.status(status).json({err: err, data: college});
   });
 });
 
 // '/college/:collegeId/department/' GET route to get departments of a college
 router.get('/:collegeId/department', config.validateRequest, (req, res, next) => {
-  collegeController.getCollegeDepartments(req.params.collegeId, (err, status, departments) => {
+  controller.getCollegeDepartments(req.params.collegeId, (err, status, departments) => {
     res.status(status).json({err:err, data: departments})
   });
 });
 
 // '/college/:collegeId/class' GET route to get classes of a college
 router.get('/:collegeId/class', config.validateRequest, (req, res, next) => {
-  collegeController.getCollegeClasses(req.params.collegeId, (err, status, classes) => {
+  controller.getCollegeClasses(req.params.collegeId, (err, status, classes) => {
     res.status(status).json({err: err, data: classes});
   });
 });
 
 // '/college/:collegeId/student' GET route to get students of a college
 router.get('/:collegeId/student', config.validateRequest, (req, res, next) => {
-  collegeController.getCollegeStudents(req.params.collegeId, (err, status, classes) => {
+  controller.getCollegeStudents(req.params.collegeId, (err, status, classes) => {
     res.status(status).json({err: err, data: success});
   });
 });
@@ -67,28 +65,28 @@ router.get('/:collegeId/staff', (req, res, next) => {
 
 // '/college/:collegeId/post' GET route to get posts of a college
 router.get('/:collegeId/post', config.validateRequest, (req, res, next) => {
-  collegeController.getCollegePosts(req.params.collegeId, (err, status, posts) => {
+  controller.getCollegePosts(req.params.collegeId, (err, status, posts) => {
     res.status(status).json({err: err, data: posts});
   });
 });
 
 // POST 'college/:collegeId/department' POST route to add a new department
 router.post('/:collegeId/department', (req, res, next) => {
-  departmentController.addDepartment(req.params.collegeId, req.body, (err, status, success) => {
+  controller.addDepartment(req.params.collegeId, req.body, (err, status, success) => {
     res.status(status).json({err: err, data: success});
   });
 });
 
 // POST 'college/:collegeId/department/:departmentId/class/' route to add a new class 
 router.post('/:collegeId/department/:departmentId/class', (req, res, next) => {
-  classController.addClass(req.params.collegeId, req.params.departmentId, req.body, (err, status, success) => {
+  controller.addClass(req.params.collegeId, req.params.departmentId, req.body, (err, status, success) => {
     res.status(status).json({err: err, data: success});
   });
 });
 
 // POST 'college/:collegeId/student/:studentId/' route to join a college
 router.post('/:collegeId/student/:studentId/join', config.validateRequest, (req, res, next) => {
-  collegeController.joinCollege(req.params.collegeId, req.params.studentId, (err, status, success) => {
+  controller.joinCollege(req.params.collegeId, req.params.studentId, (err, status, success) => {
     res.status(status).json({err: err, success: success});
   })
 });

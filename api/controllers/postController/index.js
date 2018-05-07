@@ -1,56 +1,27 @@
 // Dependencies
 const mongoose = require('mongoose');
-const schema = require('./../../models/schema');
-const {ObjectId} = require('mongodb');
-
-// Models
-let Post = mongoose.model('Post', schema.postSchema);
-let TestPost = mongoose.model('TestPost', schema.testPost);
-let Comment = mongoose.model('Comment', schema.commentSchema);
-let Student = mongoose.model('Student', schema.studentSchema);
+const { Post, Department, Student, College } = require('./../../models');
+const { ObjectId } = require('mongodb');
 
 // Find all posts
-let getAllPosts = (callback) => {
-  Post.find({}, (err, posts) => {
-    if(err)
-      return callback(err, 500, null);
-    else if(posts.length === 0)
-      return callback(null, 200, posts);
-    else{
-      let i=0,data=[]
-      posts.forEach(post => {
-        Student.findOne({_id: post.ownerId}, 'name photoURL', (err, student) => {
-          i++;
-          if(err)
-            return callback(err, 500, null);
-          else if(!student)
-            return callback('No Student Found', 404,null);
-          else{
-            data.push({
-              text: post.text,
-              comments: post.comments,
-              likes: post.likes,
-              attachment: post.attachment,
-              level: post.level,
-              timestamp: post.timestamp,
-              postedBy: post.postedBy,
-              classId: post.classId,
-              departmentId: post.departmentId,
-              collegeId: post.departmentId,
-              owner: {
-                id: student._id,
-                name: student.name,
-                photoURL: student.photoURL
-              }
-            });
+const getAllPosts = callback => {
+  Post.find({})
+    .populate({path: 'owner', select: 'name photoURL _id'})
+    .exec((err, posts) => {
+      if(err)
+        return callback(err, 500, null);
+      else
+        return callback(null, 200, posts);
+    })
+}
 
-            if(i === posts.length)
-              return callback(null, 200, data);
-          }
-        })
-      });
-    }
-  })
+// Get Posts By Page Number
+const getPostsByPage = (pageNumber, callback) => {
+  Post.find({})
+    .populate('owner')
+    .exec((err, posts) => {
+      return callback(err, posts);
+    })
 }
 
 // Get a particulat post
@@ -67,21 +38,21 @@ let getPostById = (id, callback) => {
 let addPost = (data, owner, callback) => {
 
   Student.findOne({_id: owner})
-    .select('classId collegeId departmentId')
+    .select('class college department classJoined')
     .exec((err, student) => {
       if(err)
         return callback(err, 500, null);
       else if(!student)
         return callback('No Student Found', 404, null);
       else{
-        if(student.collegeId === 'not joined' || student.departmentId === 'not joined' || student.classId === 'not joined')
-        return callback('Join College, Department and Class first', 400, null);
+        if(!student.classJoined)
+        return callback('Join A Class first', 400, null);
       
         let post = new Post(data);
-        post.ownerId = owner;
-        post.classId = student.classId;
-        post.collegeId = student.collegeId;
-        post.departmentId = student.departmentId;
+        post.owner = owner;
+        post.class = student.class;
+        post.college = student.college;
+        post.department = student.department;
 
         post.save((err, success) => {
           if(err)
@@ -98,13 +69,13 @@ let modifyPost = (id, ownerId, data, callback) => {
   if(!ObjectId.isValid(id) || !ObjectId.isValid(ownerId))
     return callback('Invalid Post Id or Owner Id', 400, null);
   
-  Post.findOne({_id: id, ownerId: ownerId}, (err, post) => {
+  Post.findOne({_id: id, owner: ownerId}, (err, post) => {
     if(err)
       return callback(err, 500, null);
     else if(!post)
       return callback('No Post Found', 404, null);
     else{
-      Post.update({_id: id, ownerId: ownerId}, data, (err, success) => {
+      Post.update({_id: id, owner: ownerId}, data, (err, success) => {
         if(err)
           return callback(err, 500, null);
         else
@@ -131,28 +102,28 @@ let deletePost = (id, callback) => {
 
 // Get All post of a particular owner
 let getOwnerPosts = (id, callback) => {
-  Post.find({ownerId: id}, (err, posts) => {
+  Post.find({owner: id}, (err, posts) => {
     return callback(err, posts);
   })
 }
 
 // Get All posts of a class
 let getClassPosts = (id, callback) => {
-  Post.find({classId: id}, (err, posts) => {
+  Post.find({class: id}, (err, posts) => {
     return callback(err, posts);
   });
 }
 
 // Get All posts of a department
 let getDepartmentPosts = (id, callback) => {
-  Post.find({departmentId: id}, (err, posts) => {
+  Post.find({department: id}, (err, posts) => {
     return callback(err, posts);
   });
 }
 
 // Get All posts of a College
 let getCollegePosts = (id, callback) => {
-  Post.find({collegeId: id}, (err, posts) => {
+  Post.find({college: id}, (err, posts) => {
     return callback(err, posts);
   });
 }
@@ -239,8 +210,15 @@ let commentOnPost = (id, commentData, callback) => {
 
 
 // Test Post functions
-let getTestPosts = (callback) => {
-  TestPost.find({}, (err, success) => callback(err, success));
+async function getTestPosts(req, res, next){
+  let posts;
+  try{
+    posts = await TestPost.find({}).exec();
+    res.status(200).send({err: null, data: posts});
+  }catch(err){
+    console.log(err);
+    res.status(500).send({err: err, data: null});
+  }
 }
 
 let addTestPost = (data, callback ) => {
@@ -266,6 +244,7 @@ let likeTestPost = (id, callback) => {
 module.exports = {
   getAllPosts,
   getPostById,
+  getPostsByPage,
   addPost,
   modifyPost,
   deletePost,

@@ -1,23 +1,18 @@
 // Dependencies
 const mongoose = require('mongoose');
-const schema = require('./../../models/schema');
 const { ObjectId } = require('mongodb');
-
-// Model
-let Department = mongoose.model('Department', schema.departmentSchema);
-let College = mongoose.model('College', schema.collegeSchema);
-let Student = mongoose.model('Student', schema.studentSchema);
-let Class = mongoose.model('Class', schema.classSchema);
-let Post = mongoose.model('Post', schema.postSchema);
+const { College, Department, Class, Student, Post} = require('./../../models');
 
 // Get all deparmtents
 let getAllDepartments = (callback) => {
-  Department.find({}, (err, classes) => {
-    if(err)
-      return callback(err, 500, null);
-    else
-      return callback(null, 200, classes);
-  })
+  Department.find({})
+    .populate({path: 'college', select: 'name'})
+    .exec((err, classes) => {
+      if(err)
+        return callback(err, 500, null);
+      else
+        return callback(null, 200, classes);
+    })
 }
 
 // Add New Department
@@ -34,7 +29,7 @@ let addDepartment = (collegeId, data, callback) => {
         return callback('No College Found', 404, null);
       else{
         let c = new Department(data);
-        c.collegeId = collegeId;
+        c.college = collegeId;
         c.save((err, success) => {
           if(err)
             return callback(err, 500, null);
@@ -63,7 +58,7 @@ let getDepartmentClasses = (departmentId, callback) => {
   if(!ObjectId.isValid(departmentId))
     return callback('Invalid Department Id', 400, null);
 
-  Class.find({departmentId: departmentId}, (err, classes) => {
+  Class.find({department: departmentId}, (err, classes) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -76,7 +71,7 @@ let getDepartmentStudents = (departmentId, callback) => {
   if(!ObjectId.isValid(departmentId))
     return callback('Invalid Department Id', 400, null);
 
-  Student.find({departmentId: departmentId}, (err, students) => {
+  Student.find({department: departmentId}, (err, students) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -89,7 +84,7 @@ let getDepartmentPosts = (departmentId, studentId, callback) => {
   if(!ObjectId.isValid(departmentId))
     return callback('Invalid Department Id', 400, null);
 
-  Post.find({departmentId: departmentId}, (err, success) => {
+  Post.find({department: departmentId}, (err, success) => {
     if(err)
       return callback(err, 500, null);
     else if(success.length === 0)
@@ -100,7 +95,7 @@ let getDepartmentPosts = (departmentId, studentId, callback) => {
       success.forEach(post => {
         i++;
 
-        Student.findOne({_id: post.ownerId}, 'name photoUrl', (err, owner) => {
+        Student.findOne({_id: post.owner}, 'name photoUrl', (err, owner) => {
           if(err)
             return callback(err, 500, null);
           else if(!owner)
@@ -130,7 +125,7 @@ let joinDepartment = (departmentId, studentId, callback) => {
         else if (student == null)
           return callback('No Student Found', 404, null);
         else{
-          student.departmentId = departmentId;
+          student.department = departmentId;
           student.save((err, success) => {
             if(err)
               return callback(err, 500, null);

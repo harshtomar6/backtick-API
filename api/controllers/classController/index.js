@@ -1,13 +1,7 @@
 // Dependencies
 const mongoose = require('mongoose');
-const schema = require('./../../models/schema');
+const { Class, College, Department, Student } = require('./../../models');
 const { ObjectId } = require('mongodb');
-
-// Model
-let Class = mongoose.model('Class', schema.classSchema);
-let College = mongoose.model('College', schema.collegeSchema);
-let Department = mongoose.model('Department', schema.departmentSchema);
-let Student = mongoose.model('Student', schema.studentSchema);
 
 // Get all classes
 let getAllClasses = (callback) => {
@@ -41,8 +35,8 @@ let addClass = (collegeId, departmentId, data, callback) => {
             return callback('No Department Found', 404, null);
           else{
             let c = new Class(data);
-            c.collegeId = collegeId;
-            c.departmentId = departmentId;
+            c.college = collegeId;
+            c.department = departmentId;
             c.classCode = getClassCode(college.name, department.name, data.name);
             c.save((err, success) => {
               if(err)
@@ -74,7 +68,7 @@ let getClassStudents = (classId, callback) => {
   if(!ObjectId.isValid(classId))
     return callback('Invalid Class Id', 400, null);
   
-  Student.find({classId: classId}, (err, success) => {
+  Student.find({class: classId}, (err, success) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -99,7 +93,7 @@ let joinClass = (classId, studentId, callback) => {
         else if (student == null)
           return callback('No Student Found', 404, null);
         else{
-          student.classId = classId;
+          student.class = classId;
           student.save((err, success) => {
             if(err)
               return callback(err, 500, null);
@@ -126,9 +120,10 @@ let joinClassByCode = (code, studentId, callback) => {
         else if (student == null)
           return callback('No Student Found', 404, null);
         else{
-          student.classId = class_._id;
-          student.departmentId = class_.departmentId;
-          student.collegeId = class_.collegeId;
+          student.class = class_._id;
+          student.department = class_.department;
+          student.college = class_.college;
+          student.classJoined = true;
           student.save((err, success) => {
             if(err)
               return callback(err, 500, null);

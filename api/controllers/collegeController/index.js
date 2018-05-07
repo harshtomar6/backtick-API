@@ -1,14 +1,7 @@
 // Dependencies
-let mongoose = require('mongoose');
-let schema = require('./../../models/schema');
-let { ObjectId } = require('mongodb');
-
-// Model
-let College = mongoose.model('College', schema.collegeSchema);
-let Department = mongoose.model('Department', schema.departmentSchema);
-let Class = mongoose.model('Class', schema.classSchema);
-let Student = mongoose.model('Student', schema.studentSchema);
-let Post = mongoose.model('Post', schema.postSchema);
+const mongoose = require('mongoose');
+const { College, Department, Class, Student, Post} = require('./../../models');
+const { ObjectId } = require('mongodb');
 
 // Get All Colleges
 let getAllColleges = callback => {
@@ -66,7 +59,7 @@ let getCollegeDepartments = (collegeId, callback) => {
   if(!ObjectId.isValid(collegeId))
     return callback('Invalid CollegeId', 400, null);
   
-  Department.find({collegeId: collegeId}, (err, departments) => {
+  Department.find({college: collegeId}, (err, departments) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -79,7 +72,7 @@ let getCollegeClasses = (collegeId, callback) => {
   if(!ObjectId.isValid(collegeId))
     return callback('Invalid CollegeId', 400, null);
   
-  Class.find({collegeId: collegeId}, (err, classes) => {
+  Class.find({college: collegeId}, (err, classes) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -105,7 +98,7 @@ let getCollegePosts = (collegeId, callback) => {
   if(!ObjectId.isValid(collegeId))
     return callback('Invalid College Id', 400, null);
   
-  Post.find({collegeId: collegeId}, (err, posts) => {
+  Post.find({college: collegeId}, (err, posts) => {
     if(err)
       return callback(err, 500, null);
     else
@@ -130,7 +123,7 @@ let joinCollege = (collegeId, studentId, callback) => {
         else if (student == null)
           return callback('No Student Found', 404, null);
         else{
-          student.collegeId = collegeId;
+          student.college = collegeId;
           student.save((err, success) => {
             if(err)
               return callback(err, 500, null);
