@@ -6,6 +6,7 @@ const { ObjectId } = require('mongodb');
 // Find all posts
 const getAllPosts = callback => {
   Post.find({})
+    .sort({timestamp:-1})
     .populate({path: 'owner', select: 'name photoURL _id'})
     .exec((err, posts) => {
       if(err)
@@ -16,9 +17,12 @@ const getAllPosts = callback => {
 }
 
 // Get Posts By Page Number
-const getPostsByPage = (pageNumber, callback) => {
+const getPostsByPage = (pageNumber, perPage, callback) => {
   Post.find({})
-    .populate('owner')
+    .sort({timestamp: -1})
+    .skip((pageNumber-1) * perPage)
+    .limit(perPage)
+    .populate({path: 'owner', select: 'name photoURL _id'})
     .exec((err, posts) => {
       return callback(err, posts);
     })

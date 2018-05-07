@@ -18,12 +18,17 @@ router.get('/', (req, res, next) => {
 
 // GET '/post/page/:pageNumber' route to paginate posts
 router.get('/page/:pageNumber', (req, res, next) => {
-  controller.getPostsByPage(1, (err, posts) => {
-    if(err)
-      res.status(500).send({err: err, data: null});
-    else
-      res.status(200).send({err: null, data: posts});
-  })
+  if(req.params.pageNumber < 1 )
+    res.status(400).send({err: 'Please Enter Valid Page Number', data: null});
+  else{
+    let perPage = req.query.limit>0 ? req.query.limit : 10;
+    controller.getPostsByPage(req.params.pageNumber, perPage, (err, posts) => {
+      if(err)
+        res.status(500).send({err: err, data: null});
+      else
+        res.status(200).send({err: null, data: posts});
+    })
+  }
 });
 
 // Test post route
