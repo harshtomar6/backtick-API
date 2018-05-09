@@ -1,6 +1,7 @@
 // Dependencies
 const mongoose = require('mongoose');
-const { Post, Department, Student, College } = require('./../../models');
+const { Post, Department, Student, 
+  College, TestPost } = require('./../../models');
 const { ObjectId } = require('mongodb');
 
 // Find all posts

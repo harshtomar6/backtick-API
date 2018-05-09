@@ -32,7 +32,7 @@ router.get('/page/:pageNumber', (req, res, next) => {
 });
 
 // Test post route
-//router.get('/test', postController.getTestPosts);
+router.get('/test', controller.getTestPosts);
 
 // GET '/post/:postid' route
 router.get('/:postid', config.validateRequest, (req, res, next) => {

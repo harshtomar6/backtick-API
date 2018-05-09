@@ -8,11 +8,11 @@ const socketio = require('socket.io');
 const dotenv = require('dotenv');
 const homeRoute = require('./api/routes/homeRoute');
 const postRoute = require('./api/routes/postRoute');
-const postController = require('./api/controllers/postController');
 const collegeRoute = require('./api/routes/collegeRoute');
 const studentRoute = require('./api/routes/studentRoute');
 const departmentRoute = require('./api/routes/departmentRoute');
 const classRoute = require('./api/routes/classRoute');
+const rt = require('./socket');
 
 // Load .env variables
 dotenv.load();
@@ -42,28 +42,9 @@ app.use('/department', departmentRoute);
 let server = require('http').Server(app);
 let io = socketio(server);
 
-let clients = [];
-
 io.on('connection', (socket) => {
-  console.log('A Client Connected');
-  clients.push(socket.id);
-  console.log(clients);
-  
-  socket.on('add-post', (data) => {
-    postController.addTestPost(data, (err, success) => {
-      if(success){
-        io.emit('new-post', success);
-      }
-    })
-  });
-
-  socket.on('like-post', (id) => {
-    postController.likeTestPost(id, (err, success) => {
-      if(success){
-        io.emit('post-liked', success);
-      }
-    });
-  })
+  rt.realTimePost(io, socket);
+  rt.realTimeTest(io, socket);
 })
 
 // Listen for http requests;
