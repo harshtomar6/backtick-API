@@ -11,9 +11,9 @@ const realTimePost = (io, socket) => {
   socket.on('/post/like', data => {
     controller.likePost(data.postId, data.ownerId, (err, success) => {
       if(err)
-        io.emit('err', err);
+        io.emit('like-err', err);
       else
-        io.emit('liked', success);
+        io.emit('like-success', success);
     })
   });
 } 
