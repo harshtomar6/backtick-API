@@ -8,7 +8,11 @@ const postSchema = Schema({
   department: {type: Schema.Types.ObjectId, required: true, ref: 'Department'},
   college: {type: Schema.Types.ObjectId, required: true, ref: 'College'},
   postedBy: {type: String, required: true}, // Should accept either Student or Staff
-  likes: {type: Array, default: []}, // Array of Object id's of either Student or Staff and name 
+  likes: [{
+    type: Schema.Types.ObjectId,
+    refPath: 'postedBy', 
+    default: []
+  }], // Array of Object id's of either Student or Staff and name 
   comments: {type: Array, required: true, default: []}, // Array of Comment id's
   text: {type: String, required: true}, // Text
   attachment: {type: Array, default: []}, // Array of {category: string, url: String}
