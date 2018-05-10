@@ -42,7 +42,8 @@ const {
   getClassPosts,
   getDepartmentPosts,
   likePost,
-  commentOnPost
+  commentOnPost,
+  savePost
 } = require('./postController');
 
 const {
@@ -97,5 +98,6 @@ module.exports = {
   addStudent,
   addOrFindStudent,
   modifyStudent,
-  setCR
+  setCR,
+  savePost
 }

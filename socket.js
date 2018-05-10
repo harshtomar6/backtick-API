@@ -8,6 +8,7 @@ const realTimePost = (io, socket) => {
   clients.push(socket.id);
   console.log(clients);
 
+  // Like Post
   socket.on('/post/like', data => {
     controller.likePost(data.postId, data.userId, (err, success) => {
       if(err)
@@ -15,6 +16,16 @@ const realTimePost = (io, socket) => {
       else
         io.emit('like-success', success);
     })
+  });
+
+  // Save Post
+  socket.on('/post/save', data => {
+    controller.savePost(data.postId, data.userId, (err, success) => {
+      if(err)
+        io.emit('save-err', err);
+      else
+        io.emit('save-success', succcess);
+    });
   });
 } 
 

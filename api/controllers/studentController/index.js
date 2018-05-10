@@ -6,9 +6,23 @@ const auth = require('./../../../auth');
 
 // Get all students
 let getAllStudents = (callback) => {
-  Student.find({}, (err, students) => {
-    return callback(err, students);
-  })
+  Student.find({})
+    .populate({
+      path: 'savedPosts', 
+      populate: {
+        path: 'likes', select: 'name photoURL',
+      }
+    })
+    .populate({
+      path: 'savedPosts',
+      populate: {
+        path: 'owner',
+        select: 'name photoURL'
+      }
+    })
+    .exec((err, students) => {
+      return callback(err, students);
+    });
 }
 
 // Get a particular Student

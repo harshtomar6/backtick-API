@@ -86,5 +86,12 @@ router.post('/:postId/comment', config.validateRequest, (req, res, next) => {
     });
 });
 
+// POST '/post/:postId/save' route to save a post
+router.post('/:postId/save', config.validateRequest, (req, res, next) => {
+  controller.savePost(req.params.postId, req.headers['x-key'], (err, status, success) => {
+    res.status(status).json({err: err, data: success});
+  });
+});
+
 
 module.exports = router;

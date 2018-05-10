@@ -3,11 +3,13 @@ const mongoose = require('mongoose');
 const { Post, Department, Student, 
   College, TestPost } = require('./../../models');
 const { ObjectId } = require('mongodb');
+const moid = mongoose.Types.ObjectId;
 
 // Find all posts
 const getAllPosts = callback => {
   Post.find({})
     .sort({timestamp:-1})
+    .populate({path: 'likes', select: 'name photoURL'})
     .populate({path: 'owner', select: 'name photoURL _id'})
     .exec((err, posts) => {
       if(err)
@@ -105,6 +107,43 @@ let deletePost = (id, callback) => {
   });
 }
 
+// Save A Post
+const savePost = (postId, ownerId, callback) => {
+  if(!ObjectId.isValid(postId) || !ObjectId.isValid(ownerId))
+    return callback('Invalid Post Id or Owner Id', 400, null);
+  
+  Post.findOne({_id: postId},'savedPosts', (err, post) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!post)
+      return callback('No Post Found', 400, null);
+    else{
+      Student.findOne({_id: ownerId}, (err, student) => {
+        if(err)
+          return callback(err, 500, null);
+        else if(!student)
+          return callback('No Student Found', 400, null);
+        else{
+          let savedPosts = [];
+          for(let i=0;i<student.savedPosts.length;i++)
+            savedPosts.push(student.savedPosts[i].toString());
+          if(savedPosts.includes(postId))
+            student.savedPosts.splice(savedPosts.indexOf(postId), 1);
+          else
+            student.savedPosts.push(new moid(postId));
+          
+          student.save((err, saved) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, saved);
+          })
+        }
+      });
+    }
+  })
+}
+
 // Get All post of a particular owner
 let getOwnerPosts = (id, callback) => {
   Post.find({owner: id}, (err, posts) => {
@@ -144,40 +183,20 @@ let likePost = (id, ownerid, callback) => {
     else if(post == null)
       return callback('No Post Found', 404, null);
     else{
-      if(post.likes.length === 0){
-        post.likes.push(ownerid);
-        post.save((err, success) => {
-          if(err)
-            return callback(err, 500, null);
-          else
-            return callback(null, 200, success);
-        })  
-      }
-      else{
-        let i=0;
-        post.likes.forEach(element => {
-          i++;
-          if(element == ownerid){
-            post.likes.splice(post.likes.indexOf(ownerid), 1);
-            post.save((err, success) => {
-              if(err)
-                return callback(err, 500, null);
-              else
-                return callback(null, 200, success);
-            })    
-          }
-
-          if(i == post.likes.length){
-            post.likes.push(ownerid);
-            post.save((err, success) => {
-              if(err)
-                return callback(err, 500, null);
-              else
-                return callback(null, 200, success);
-            })
-          }
-        });
-      }
+      let likes = [];
+      for(let i=0;i<post.likes.length;i++)
+        likes.push(post.likes[i].toString());
+      if(likes.includes(ownerid))
+        post.likes.splice(likes.indexOf(ownerid), 1);
+      else
+        post.likes.push(new moid(ownerid));
+      
+      post.save((err, saved) => {
+        if(err)
+          return callback(err, 500, null);
+        else
+          return callback(null, 200, saved);
+      })
     }
   });
 }
@@ -261,5 +280,6 @@ module.exports = {
   getDepartmentPosts,
   getCollegePosts,
   likePost,
-  commentOnPost
+  commentOnPost,
+  savePost
 }
