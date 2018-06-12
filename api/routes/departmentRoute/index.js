@@ -31,9 +31,16 @@ router.get('/:departmentId/student', config.validateRequest, (req, res, next) =>
   });
 });
 
-// POST '/department/:departmentId/join' route to join a class
-router.post('/:departmentId/join', config.validateRequest, (req, res, next) => {
+// POST '/department/:departmentId/student/join' route to join a department (student)
+router.post('/:departmentId/student/join', config.validateRequest, (req, res, next) => {
   controller.joinDepartment(req.params.departmentId, req.headers['x-key'], (err, status, data) => {
+    res.status(status).json({err: err, data: data});
+  });
+});
+
+// POST '/department/:departmentId/staff/join' route to join a department (staff)
+router.post('/:departmentId/staff/join', config.validateRequest, (req, res, next) => {
+  controller.joinDepartmentStaff(req.params.departmentId, req.headers['x-key'], (err, status, data) => {
     res.status(status).json({err: err, data: data});
   });
 });

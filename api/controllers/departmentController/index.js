@@ -1,7 +1,7 @@
 // Dependencies
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongodb');
-const { College, Department, Class, Student, Post} = require('./../../models');
+const { College, Department, Class, Student, Post, Staff} = require('./../../models');
 
 // Get all deparmtents
 let getAllDepartments = (callback) => {
@@ -138,6 +138,36 @@ let joinDepartment = (departmentId, studentId, callback) => {
   })
 }
 
+// Join Department Staff
+const joinDepartmentStaff = (departmentId, staffId, callback) => {
+  if(!ObjectId.isValid(departmentId) || !ObjectId.isValid(staffId))
+    return callback('Invalid Department or Staff Id', 400, null);
+  
+  Department.findOne({_id: departmentId}, (err, department) => {
+    if(err)
+      return callback(err, 500, null);
+    else if (department == null)
+      return callback('No Department Found', 404, null);
+    else{
+      Staff.findOne({_id: staffId}, (err, staff) => {
+        if(err)
+          return callback(err, 500, null);
+        else if (staff == null)
+          return callback('No Staff Found', 404, null);
+        else{
+          staff.department = departmentId;
+          staff.save((err, success) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, success);
+          });
+        }
+      })
+    }
+  })
+}
+
 module.exports = {
   getAllDepartments,
   getDepartment,
@@ -145,5 +175,6 @@ module.exports = {
   getDepartmentStudents,
   getDepartmentPosts,
   addDepartment,
-  joinDepartment
+  joinDepartment,
+  joinDepartmentStaff
 }

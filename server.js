@@ -7,11 +7,8 @@ const logger = require('morgan');
 const socketio = require('socket.io');
 const dotenv = require('dotenv');
 const homeRoute = require('./api/routes/homeRoute');
-const postRoute = require('./api/routes/postRoute');
-const collegeRoute = require('./api/routes/collegeRoute');
-const studentRoute = require('./api/routes/studentRoute');
-const departmentRoute = require('./api/routes/departmentRoute');
-const classRoute = require('./api/routes/classRoute');
+const groupRoute = require('./apiv2/routes/groupRoute');
+const userRoute = require('./apiv2/routes/userRoute');
 const rt = require('./socket');
 
 // Load .env variables
@@ -32,20 +29,23 @@ app.use(bodyParser.json());
 
 // Use Routes
 app.use('/', homeRoute);
-app.use('/post', postRoute);
-app.use('/college', collegeRoute);
-app.use('/student', studentRoute);
-app.use('/class', classRoute);
-app.use('/department', departmentRoute);
+// app.use('/post', postRoute);
+// app.use('/college', collegeRoute);
+// app.use('/student', studentRoute);
+// app.use('/staff', staffRoute);
+// app.use('/class', classRoute);
+// app.use('/department', departmentRoute);
+app.use('/user', userRoute);
+app.use('/group', groupRoute);
 
 //Config WebSockets;
 let server = require('http').Server(app);
 let io = socketio(server);
 
-io.on('connection', (socket) => {
-  rt.realTimePost(io, socket);
-  rt.realTimeTest(io, socket);
-})
+// io.on('connection', (socket) => {
+//   rt.realTimePost(io, socket);
+//   rt.realTimeTest(io, socket);
+// })
 
 // Listen for http requests;
 server.listen(PORT, () => {

@@ -1,6 +1,6 @@
 // Dependencies
 const mongoose = require('mongoose');
-const { Class, College, Department, Student } = require('./../../models');
+const { Class, College, Department, Student, Staff } = require('./../../models');
 const { ObjectId } = require('mongodb');
 
 // Get all classes
@@ -106,6 +106,37 @@ let joinClass = (classId, studentId, callback) => {
   })
 }
 
+// Join Class Staff
+const joinClassStaff = (classId, staffId, callback) => {
+  if(!ObjectId.isValid(classId) || !ObjectId.isValid(staffId))
+    return callback('Invalid Class or Staff Id', 400, null);
+  
+  Class.findOne({_id: classId}, (err, class_) => {
+    if(err)
+      return callback(err, 500, null);
+    else if (class_ == null)
+      return callback('No Class Found', 404, null);
+    else{
+      Staff.findOne({_id: staffId}, (err, staff) => {
+        if(err)
+          return callback(err, 500, null);
+        else if (staff == null)
+          return callback('No Staff Found', 404, null);
+        else{
+          staff.classes.push(classId);
+          staff.classJoined = true;
+          staff.save((err, success) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, success);
+          });
+        }
+      })
+    }
+  })
+}
+
 // Join Class by class code
 let joinClassByCode = (code, studentId, callback) => {
   Class.findOne({classCode: code}, (err, class_) => {
@@ -161,5 +192,6 @@ module.exports = {
   addClass,
   getClassStudents,
   joinClass,
+  joinClassStaff,
   joinClassByCode
 }

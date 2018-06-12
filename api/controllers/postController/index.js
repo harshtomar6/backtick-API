@@ -1,7 +1,7 @@
 // Dependencies
 const mongoose = require('mongoose');
 const { Post, Department, Student, 
-  College, TestPost } = require('./../../models');
+  College, TestPost, Staff } = require('./../../models');
 const { ObjectId } = require('mongodb');
 const moid = mongoose.Types.ObjectId;
 
@@ -43,32 +43,57 @@ let getPostById = (id, callback) => {
 
 // Add new Post
 let addPost = (data, owner, callback) => {
+  if(data.postedBy === 'Student')
+    Student.findOne({_id: owner})
+      .select('class college department classJoined')
+      .exec((err, student) => {
+        if(err)
+          return callback(err, 500, null);
+        else if(!student)
+          return callback('No Student Found', 400, null);
+        else{
+          if(!student.classJoined)
+          return callback('Join A Class first', 400, null);
+        
+          let post = new Post(data);
+          post.owner = owner;
+          post.class = student.class;
+          post.college = student.college;
+          post.department = student.department;
 
-  Student.findOne({_id: owner})
-    .select('class college department classJoined')
-    .exec((err, student) => {
-      if(err)
-        return callback(err, 500, null);
-      else if(!student)
-        return callback('No Student Found', 404, null);
-      else{
-        if(!student.classJoined)
-        return callback('Join A Class first', 400, null);
-      
-        let post = new Post(data);
-        post.owner = owner;
-        post.class = student.class;
-        post.college = student.college;
-        post.department = student.department;
+          post.save((err, success) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, success);
+          });
+        }  
+      });
+  else if(data.postedBy === 'Staff')
+    Staff.findOne({_id: owner})
+      .select('college department classJoined')
+      .exec((err, staff) => {
+        if(err)
+          return callback(err, 500, null);
+        else if(!staff)
+          return callback('No Staff Found', 400, null);
+        else{
+          if(!staff.classJoined)
+            return callback('Join A Class First', 400, null);
+          
+          let post = new Post(data);
+          post.owner = owner;
+          post.department = staff.department;
+          post.college = staff.college;
 
-        post.save((err, success) => {
-          if(err)
-            return callback(err, 500, null);
-          else
-            return callback(null, 200, success);
-        });
-      }  
-    });
+          post.save((err, success) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, success);
+          });
+        }
+      });
 }
 
 // Edit existing Post

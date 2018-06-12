@@ -87,6 +87,7 @@ let addOrFindStudent = (data, callback) => {
     }
     else{
       let student = new Student(data);
+      data.email = data.email.toLowerCase();
       if(data.password)
         student.password = student.genHash(data.password);
       else

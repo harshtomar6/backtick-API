@@ -58,9 +58,9 @@ router.get('/:collegeId/student', config.validateRequest, (req, res, next) => {
   });
 });
 
-// '/college/:collegeId/staff' GET route
+// '/college/:collegeId/staff' GET route to get staff of a college
 router.get('/:collegeId/staff', (req, res, next) => {
-
+  //controller.getCollegeStaff(req.params.)
 });
 
 // '/college/:collegeId/post' GET route to get posts of a college
@@ -91,6 +91,11 @@ router.post('/:collegeId/student/:studentId/join', config.validateRequest, (req,
   })
 });
 
-// 
+// POST 'college/:collegeId/staff/:staffId/' route to join a college
+router.post('/:collegeId/staff/:staffId/join', config.validateRequest, (req, res, next) => {
+  controller.joinCollegeStaff(req.params.collegeId, req.params.staffId, (err, status, success) => {
+    res.status(status).json({err: err, success: success});
+  });
+});
 
 module.exports = router;

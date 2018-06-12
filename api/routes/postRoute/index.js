@@ -66,14 +66,14 @@ router.delete('/:postId', config.validateRequest, (req, res, next) => {
       res.status(500).json({err: err, data: null});
     else
       res.status(200).json({err: null, data: data});
-  })
+  });
 });
 
 // POST '/post/:postId/like' route to like a post
 router.post('/:postId/like', config.validateRequest, (req, res, next) => {
   controller.likePost(req.params.postId, req.headers['x-key'], (err, status, success) => {
     res.status(status).json({err: err, data: success});
-  })
+  });
 });
 
 // POST '/post/:postId/comment' route to comment on a post

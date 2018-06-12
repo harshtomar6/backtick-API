@@ -10,6 +10,6 @@ const departmentSchema = Schema({
   versionKey: false
 });
 
-const Department = mongoose.model('Deparment', departmentSchema);
+const Department = mongoose.model('Department', departmentSchema);
 
 module.exports = Department;

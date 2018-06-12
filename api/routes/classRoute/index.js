@@ -24,9 +24,16 @@ router.get('/:classId/student', config.validateRequest, (req, res, next) => {
   })
 });
 
-// POST '/class/:classId/join' route to join a class
-router.post('/:classId/join', config.validateRequest, (req, res, next) => {
+// POST '/class/:classId/student/join' route to join a class
+router.post('/:classId/student/join', config.validateRequest, (req, res, next) => {
   controller.joinClass(req.params.classId, req.headers['x-key'], (err, status, data) => {
+    res.status(status).json({err: err, data: data});
+  });
+});
+
+// POST '/class/:classId/staff/join' route to join a class (staff)
+router.post('/:classId/staff/join', config.validateRequest, (req, res, next) => {
+  controller.joinClassStaff(req.params.classId, req.headers['x-key'], (err, status, data) => {
     res.status(status).json({err: err, data: data});
   });
 });

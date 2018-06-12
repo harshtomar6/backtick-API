@@ -4,7 +4,8 @@ const {
   addClass,
   getClassStudents,
   joinClass,
-  joinClassByCode
+  joinClassByCode,
+  joinClassStaff
 } = require('./classController');
 
 const {
@@ -13,6 +14,7 @@ const {
   addCollege,
   modifyCollege,
   joinCollege,
+  joinCollegeStaff,
   getCollegeDepartments,
   getCollegeClasses,
   getCollegeStudents,
@@ -25,7 +27,8 @@ const {
   getDepartmentClasses,
   getDepartmentStudents,
   addDepartment,
-  joinDepartment
+  joinDepartment,
+  joinDepartmentStaff
 } = require('./departmentController');
 
 const { 
@@ -55,18 +58,28 @@ const {
   setCR
 } = require('./studentController');
 
+const {
+  getAllStaff,
+  getStaff,
+  addStaff,
+  addOrFindStaff,
+  modifyStaff
+} = require('./staffController');
+
 module.exports = {
   getAllClasses,
   getClass,
   addClass,
   getClassStudents,
   joinClass,
+  joinClassStaff,
   joinClassByCode,
   getAllColleges,
   getCollege,
   addCollege,
   modifyCollege,
   joinCollege,
+  joinCollegeStaff,
   getCollegeDepartments,
   getCollegeClasses,
   getCollegeStudents,
@@ -78,6 +91,7 @@ module.exports = {
   getDepartmentPosts,
   addDepartment,
   joinDepartment,
+  joinDepartmentStaff,
   getAllPosts,
   getPostById,
   getPostsByPage,
@@ -99,5 +113,10 @@ module.exports = {
   addOrFindStudent,
   modifyStudent,
   setCR,
-  savePost
+  savePost,
+  getAllStaff,
+  getStaff,
+  addStaff,
+  addOrFindStaff,
+  modifyStaff
 }

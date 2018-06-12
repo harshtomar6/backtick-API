@@ -1,6 +1,6 @@
 // Dependencies
 const mongoose = require('mongoose');
-const { College, Department, Class, Student, Post} = require('./../../models');
+const { College, Department, Class, Student, Post, Staff} = require('./../../models');
 const { ObjectId } = require('mongodb');
 
 // Get All Colleges
@@ -133,7 +133,37 @@ let joinCollege = (collegeId, studentId, callback) => {
         }
       })
     }
-  })
+  });
+}
+
+// Join College Staff
+const joinCollegeStaff = (collegeId, staffId, callback) => {
+  if(!ObjectId.isValid(collegeId) || !ObjectId.isValid(staffId))
+    return callback('Invalid College or Staff Id', 400, null);
+
+  College.findOne({_id: collegeId}, (err, college) => {
+    if(err)
+      return callback(err, 500, null);
+    else if (college == null)
+      return callback('No College Found', 404, null);
+    else{
+      Staff.findOne({_id: staffId}, (err, staff) => {
+        if(err)
+          return callback(err, 500, null);
+        else if (staff == null)
+          return callback('No Staff Found', 400, null);
+        else{
+          staff.college = collegeId;
+          staff.save((err, success) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, success);
+          });
+        }
+      })
+    }
+  });
 }
 
 module.exports = {
@@ -142,6 +172,7 @@ module.exports = {
   addCollege,
   modifyCollege,
   joinCollege,
+  joinCollegeStaff,
   getCollegeDepartments,
   getCollegeClasses,
   getCollegeStudents,
