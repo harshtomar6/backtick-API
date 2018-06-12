@@ -31,6 +31,31 @@ const userSchema = Schema({
   versionKey: false
 });
 
+// Type Validator 
+const validateType = type => {
+  switch(type){
+    case 'Student':
+      return true;
+    case 'Staff':
+      return true;
+    case 'Admin':
+      return true;
+    default: 
+      return false;
+  }
+}
+
+// Pre Save Type Validator
+userSchema.pre('save', function(next){
+  if(!validateType(this.type))
+    return next('Invalid User Type');
+  
+  if(this.type === 'Admin' && this.groups.length==0)
+    return next('Admin Should Belong To A College');
+
+  next();
+});
+
 // Hash methods for Students
 userSchema.methods.genHash = (password) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8));

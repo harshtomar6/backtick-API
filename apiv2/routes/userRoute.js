@@ -11,7 +11,7 @@ router.use(function(req, res, next) {
 });
 
 // GET '/user' to get all users;
-router.get('/', (req, res, next) => {
+router.get('/', validateSuperuser, (req, res, next) => {
   
 });
 

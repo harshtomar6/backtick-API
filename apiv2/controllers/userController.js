@@ -2,86 +2,100 @@
 const { ObjectId } = require('mongodb');
 const { User, Superuser } = require('./../models');
 const { generateToken } = require('./../auth');
+const { getCollege } = require('./groupController');
 
 // Add Student
 const addStudent = (data, callback) => {
-  User.findOne({email: data.email.toLowerCase()}, (err, student) => {
-    if(err)
-      return callback(err, 500, null);
-    else if(student){
-      return callback(null, 200, generateToken(student));
-    }
-    else{
-      let student = new User(data);
-      student.email = data.email.toLowerCase();
-      student.type = 'Student';
-      if(data.password)
-        student.password = student.genHash(data.password);
-      else
-        student.password = student.genHash('NOPASSWORD');
-
-      student.save((err, success) => {
-        if(err)
-          return callback(err, 500, null);
+  User.findOne({email: data.email.toLowerCase(), type: 'Student'})
+    .populate('groups')
+    .exec((err, student) => {
+      if(err)
+        return callback(err, 500, null);
+      else if(student){
+        return callback(null, 200, generateToken(student));
+      }
+      else{
+        let student = new User(data);
+        student.email = data.email.toLowerCase();
+        student.type = 'Student';
+        if(data.password)
+          student.password = student.genHash(data.password);
         else
-          return callback(null, 200, generateToken(success));
-      });
-    }
-  });
+          student.password = student.genHash('NOPASSWORD');
+
+        student.save((err, success) => {
+          if(err)
+            return callback(err, 500, null);
+          else
+            return callback(null, 200, generateToken(success));
+        });
+      }
+    });
 }
 
 // Add Staff
 const addStaff = (data, callback) => {
-  User.findOne({email: data.email.toLowerCase()}, (err, staff) => {
-    if(err)
-      return callback(err, 500, null);
-    else if(staff){
-      return callback(null, 200, generateToken(staff));
-    }
-    else{
-      let staff = new User(data);
-      staff.email = data.email.toLowerCase();
-      staff.type = 'Staff';
-      if(data.password)
-        staff.password = staff.genHash(data.password);
-      else
-        staff.password = staff.genHash('NOPASSWORD');
-
-      staff.save((err, success) => {
-        if(err)
-          return callback(err, 500, null);
+  User.findOne({email: data.email.toLowerCase(), type: 'Staff'})
+    .populate('groups')
+    .exec((err, staff) => {
+      if(err)
+        return callback(err, 500, null);
+      else if(staff){
+        return callback(null, 200, generateToken(staff));
+      }
+      else{
+        let staff = new User(data);
+        staff.email = data.email.toLowerCase();
+        staff.type = 'Staff';
+        if(data.password)
+          staff.password = staff.genHash(data.password);
         else
-          return callback(null, 200, auth.generateToken(success));
-      });
-    }
-  });
+          staff.password = staff.genHash('NOPASSWORD');
+
+        staff.save((err, success) => {
+          if(err)
+            return callback(err, 500, null);
+          else
+            return callback(null, 200, auth.generateToken(success));
+        });
+      }
+    });
 }
 
 // Add Admin
 const addAdmin = (data, callback) => {
-  User.findOne({email: data.email.toLowerCase()}, (err, staff) => {
-    if(err)
-      return callback(err, 500, null);
-    else if(staff){
-      return callback(null, 200, generateToken(staff));
-    }
-    else{
-      let staff = new User(data);
-      staff.email = data.email.toLowerCase();
-      staff.type = 'Admin';
-      if(data.password)
-        staff.password = staff.genHash(data.password);
-      else
-        staff.password = staff.genHash('NOPASSWORD');
+  User.findOne({email: data.email.toLowerCase(), type: 'Admin'})
+    .populate('groups')
+    .exec((err, admin) => {
+      if(err)
+        return callback(err, 500, null);
+      else if(admin){
+        return callback(null, 200, generateToken(admin));
+      }
+      else{
+        getCollege(data.college, (err, status, college) => {
+          if(status === 200){
+            let admin = new User(data);
+            admin.email = data.email.toLowerCase();
+            admin.type = 'Admin';
+            admin.groups.push(data.college);
 
-      staff.save((err, success) => {
-        if(err)
-          return callback(err, 500, null);
-        else
-          return callback(null, 200, auth.generateToken(success));
-      });
-    }
-  });
+            if(data.password)
+              admin.password = admin.genHash(data.password);
+            else
+              admin.password = admin.genHash('NOPASSWORD');
+
+            admin.save((err, success) => {
+              if(err)
+                return callback(err, 500, null);
+              else
+                return callback(null, 200, generateToken(success));
+            });
+          }else
+            return callback(err, status, null);
+        });
+      }
+    });
 }
 
 // Add Superuser

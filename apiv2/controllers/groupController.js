@@ -35,7 +35,7 @@ const getCollege = (collegeId, callback) => {
     if(err)
       return callback(err, 500, null);
     else if(!college)
-      return callback(err, 400, null);
+      return callback('No College Found', 400, null);
     else{
       return callback(null, 200, college);
     }
