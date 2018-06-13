@@ -1,7 +1,7 @@
 // Dependencies
 const jwt = require('jwt-simple');
 
-let generateToken = user => {
+const generateToken = user => {
   let expires = expiresIn(7);
   let token = jwt.encode({
     exp: expires,
@@ -16,9 +16,29 @@ let generateToken = user => {
   }
 }
 
-let expiresIn = (num) => {
+// Generate Token for Admin
+const generateTokenForAdmin = admin => {
+  let expires = expiresIn(7);
+  let token = jwt.encode({
+    exp: expires,
+    userId: admin._id,
+    scope: admin.groups[0]._id
+  }, process.env.SESSION_SECRET);
+
+  return {
+    token,
+    key: admin._id,
+    expires,
+    admin
+  }
+}
+
+const expiresIn = (num) => {
   let date = new Date();
   return date.setDate(date.getDate() + num);
 }
 
-module.exports = {generateToken}
+module.exports = {
+  generateToken,
+  generateTokenForAdmin
+}

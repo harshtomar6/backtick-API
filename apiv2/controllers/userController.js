@@ -1,7 +1,7 @@
 // Dependencies
 const { ObjectId } = require('mongodb');
 const { User, Superuser } = require('./../models');
-const { generateToken } = require('./../auth');
+const { generateToken, generateTokenForAdmin } = require('./../auth');
 const { getCollege } = require('./groupController');
 
 // Add Student
@@ -70,7 +70,7 @@ const addAdmin = (data, callback) => {
       if(err)
         return callback(err, 500, null);
       else if(admin){
-        return callback(null, 200, generateToken(admin));
+        return callback(null, 200, generateTokenForAdmin(admin));
       }
       else{
         getCollege(data.college, (err, status, college) => {
@@ -89,7 +89,7 @@ const addAdmin = (data, callback) => {
               if(err)
                 return callback(err, 500, null);
               else
-                return callback(null, 200, generateToken(success));
+                return callback(null, 200, generateTokenForAdmin(success));
             });
           }else
             return callback(err, status, null);
@@ -143,7 +143,7 @@ const getSuperuser = (superuserId, callback) => {
     if(err)
       return calback(err, 500, null);
     else if(!superuser)
-      return callback("No SuperUser Exists",400, null);
+      return callback("No SuperUser Exists",404, null);
     else
       return callback(null, 200, superuser);
   });
@@ -165,7 +165,7 @@ const getUserById = (userId, callback) => {
     if(err)
       return callback(err, 500, null);
     else if(!user)
-      return callback('No Student Found', 400, null);
+      return callback('No Student Found', 404, null);
     else
       return callback(null, 200, user);
   });

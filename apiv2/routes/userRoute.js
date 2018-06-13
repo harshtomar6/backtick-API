@@ -40,7 +40,7 @@ router.post('/staff', (req, res, next) => {
 router.post('/su', (req, res, next) => {
   controller.addSuperuser(req.body, (err, status, success) => {
     res.status(status).send({err: err, data: success});
-  })
+  });
 });
 
 // POST '/user/admin' to create
@@ -48,6 +48,11 @@ router.post('/admin', (req, res, next) => {
   controller.addAdmin(req.body, (err, status, success) => {
     res.status(status).send({err: err, data: success});
   });
+});
+
+// PUT '/user/student/join' to join a group
+router.post('/student/join', (req, res, next) => {
+
 });
 
 module.exports = router;
