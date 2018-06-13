@@ -82,11 +82,88 @@ const addDepartment = (collegeId, data, callback) => {
   });
 }
 
+// Get a particular Department
+const getDepartment = (departmentId, callback) => {
+  if(!ObjectId.isValid(departmentId))
+    return callback('Invalid Department ID', 400, null);
+
+  Group.findOne({_id: departmentId, type: 'Department'})
+  .populate('parent')  
+  .exec((err, department) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!department)
+      return callback('No Department Found !', 400, null);
+    else
+      return callback(null, 200, department); 
+  });
+}
+
+// Get Classes of a College
+const getCollegeClass = (collegeId, callback) => {
+  if(!ObjectId.isValid(collegeId))
+    return callback('Invalid College Id', 400, null);
+
+  Group.find({parent: collegeId, type: 'Class'})
+    .populate('parent')
+    .exec((err, classes) => {
+      if(err)
+        return callback(err, 500, null);
+      else
+        return callback(null, 200, classes);
+    });
+}
+
+// Get Classes of a Department
+const getDepartmentClass = (departmentId, callback) => {
+  if(!ObjectId.isValid(departmentId))
+    return callback('Invalid Department Id', 400, null);
+
+  Group.find({parent: departmentId, type: 'Class'})
+    .populate('parent')
+    .exec((err, classes) => {
+      if(err)
+        return callback(err, 500, null);
+      else
+        return callback(null, 200, classes);
+    });
+}
+
+// Add Class to a Department
+const addClass = (departmentId, data, callback) => {
+  if(!ObjectId.isValid(departmentId))
+    return callback("Invalid Department Id", 400, null);
+
+  Group.findOne({_id: departmentId, type: 'Department'}, (err, department) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!department)
+      return callback('No Department Found !', 400, null);
+    else{
+      let class_ = new Group(data);
+      class_.type = "Class";
+      class_.parent.push(departmentId);
+      class_.parent.push(department.parent[0]);
+
+      class_.save((err, success) => {
+        if(err)
+          return callback(err, 500, null);
+        else
+          return callback(null, 200, success);
+      });
+    }
+  });
+}
+
 
 module.exports = {
   getAllColleges,
   addCollege,
   addDepartment,
+  addClass,
   getCollege,
-  getCollegeDepartments
+  getDepartment,
+  getCollegeDepartments,
+  getCollegeClass,
+  getDepartmentClass,
 }

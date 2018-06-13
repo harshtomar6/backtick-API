@@ -50,6 +50,14 @@ Retrieves All Departments of a particular College
 |------|--------|-----------|------|------|
 |GET|'/group/college/:collegId/department'|SUPERUSER or ADMIN|-|DONE|
 
+## GET `/group/college/:collegeId/class` route
+
+Retrieves All Classes of a particular College
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|GET|'/group/college/:collegId/class'|SUPERUSER or ADMIN|-|DONE|
+
 ## GET `/group/college/:collegeId/student` route
 
 Retrieves All Students of a particular College
@@ -69,7 +77,7 @@ Retrieves All Staff of a particular/group college
 
 ## GET `/group/college/:collegeId/group` route
 
-Retrieves All Groups of a particular/group college
+Retrieves All Groups of a particular college
 
 |METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
 |------|--------|-----------|------|------|
@@ -89,6 +97,33 @@ For Retrivieng all the posts of college and its subgroups as well,
 Hit the above end-pont with value of `all` param as true.
 
 Example -> `/group/college/:collegeId/post?all=true`
+
+## GET `/group/department/:deparmtentId` route
+
+Retrieves a particular department
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|GET|'/group/department/:departmentId'|SUPERUSER or ADMIN|-|DONE|
+
+## GET '/group/department/:departmentId/class' route
+
+Retrieves all classes of a particular department
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|GET|'/group/department/:departmentId/class'|SUPERUSER or ADMIN|-|DONE|
+
+
+## GET `/group/college/:collegeId/group` route
+
+Retrieves All Groups of a particular/group college
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|GET|'/group/college/:collegeId/group'|SUPERUSER or ADMIN|-|PENDING|
+
+
 
 ## POST `/group/college` route
 
@@ -122,6 +157,25 @@ Add New Department To a particular College
 ```json
   {
     "name": "Department Name", (required),
+    "meta": {
+      (any object) 
+    } (optional)
+  }
+```
+
+## POST `/group/department/:departmentId/class` route
+
+Add New Class To a particular Department
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|POST|'/group/department/:departmentId/class'|SUPERUSER or ADMIN|-|DONE|
+
+**Parameters in body**
+
+```json
+  {
+    "name": "Class Name", (required),
     "meta": {
       (any object) 
     } (optional)

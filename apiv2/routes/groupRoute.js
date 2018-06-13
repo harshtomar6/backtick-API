@@ -38,11 +38,39 @@ router.get('/college/:collegeId/department', validateAdmin, (req, res, next) => 
   });
 });
 
+// GET '/group/department/:departmentId' to get a particular department
+router.get('/department/:departmentId', validateAdmin, (req, res, next) => {
+  controller.getDepartment(req.params.departmentId, (err, status, department) => {
+    res.status(status).send({err: err, data: department});
+  });
+});
+
 // POST '/group/college/:collegeId/department' to create new department of a college
 router.post('/college/:collegeId/department', validateAdmin, (req, res, next) => {
   controller.addDepartment(req.params.collegeId, req.body, (err, status, success) => {
     res.status(status).send({err: err, data: success});
   });
 });
+
+// GET '/group/college/:collegeId/class' to get all classes of a college
+router.get('/college/:collegeId/class', validateAdmin, (req, res, next) => {
+  controller.getCollegeClass(req.params.collegeId, (err, status, classes) => {
+    res.status(status).send({err: err, data: classes});
+  });
+})
+
+// POST '/group/department/:departmentId/class' to create a new class
+router.post('/department/:departmentId/class', validateAdmin, (req, res, next) => {
+  controller.addClass(req.params.departmentId, req.body, (err, status, success) => {
+    res.status(status).send({err: err, data: success});
+  });
+});
+
+// GET '/group/department/:departmentId/class' to get all classes of a department
+router.get('/department/:departmentId/class', validateAdmin, (req, res, next) => {
+  controller.getDepartmentClass(req.params.departmentId, (err, status, classes) => {
+    res.status(status).send({err: err, data: classes});
+  });
+}); 
 
 module.exports = router;

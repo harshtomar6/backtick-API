@@ -14,6 +14,21 @@ const groupSchema = Schema({
   versionKey: false
 });
 
+const validateType = type => {
+  switch(type){
+    case 'Normal':
+      return true;
+    case 'College':
+      return true;
+    case 'Department':
+      return true;
+    case 'Class':
+      return true;
+    default: 
+      return false
+  }
+}
+
 const Group = mongoose.model('Group', groupSchema);
 
 module.exports = Group;
