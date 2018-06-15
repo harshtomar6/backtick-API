@@ -49,7 +49,7 @@ const validateAdmin = (req, res, next) => {
       return;
     }
 
-    if(req.params.collegeId && req.params.collegeId !== decoded.scope){
+    if(req.params.collegeId && req.params.collegeId !== decoded.scope && decoded.scope !== 'SU'){
       res.status(401).send({err: 'Not Allowed !', data: null});
       return;
     }

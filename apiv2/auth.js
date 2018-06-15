@@ -33,6 +33,23 @@ const generateTokenForAdmin = admin => {
   }
 }
 
+// Generate Token for Superuser
+const generateTokenForSuperuser = su => {
+  let expires = expiresIn(7);
+  let token = jwt.encode({
+    exp: expires,
+    userId: su._id,
+    scope: 'SU'
+  }, process.env.SESSION_SECRET);
+
+  return {
+    token,
+    key: su._id,
+    expires,
+    su
+  }
+}
+
 const expiresIn = (num) => {
   let date = new Date();
   return date.setDate(date.getDate() + num);
@@ -40,5 +57,6 @@ const expiresIn = (num) => {
 
 module.exports = {
   generateToken,
-  generateTokenForAdmin
+  generateTokenForAdmin,
+  generateTokenForSuperuser
 }

@@ -1,7 +1,8 @@
 // Dependencies
 const { ObjectId } = require('mongodb');
 const { User, Superuser } = require('./../models');
-const { generateToken, generateTokenForAdmin } = require('./../auth');
+const { generateToken, generateTokenForAdmin,
+  generateTokenForSuperuser } = require('./../auth');
 const { getCollege } = require('./groupController');
 
 // Add Student
@@ -112,7 +113,7 @@ const addSuperuser = (data, callback) => {
           return callback(err, 500, null);
         else if(su){
           if(su.compareHash(data.password))
-            return callback(null, 200, generateToken(su));
+            return callback(null, 200, generateTokenForSuperuser(su));
           else
             return callback('Wrong Password', 401, null);
         }else{
@@ -126,7 +127,7 @@ const addSuperuser = (data, callback) => {
               if(err)
                 return callback(err, 500, null);
               else
-                return callback(null, 200, generateToken(success));
+                return callback(null, 200, generateTokenForSuperuser(success));
             })
           }
         }
