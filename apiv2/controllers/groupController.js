@@ -1,6 +1,6 @@
 // Dependencies
 const { ObjectId } = require('mongodb');
-const { Group } = require('./../models');
+const { Group, User } = require('./../models');
 
 // Get All Colleges
 const getAllColleges = (callback) => {
@@ -149,8 +149,32 @@ const addClass = (departmentId, data, callback) => {
         if(err)
           return callback(err, 500, null);
         else
-          return callback(null, 200, success);
+          return callback(null, 201, success);
       });
+    }
+  });
+}
+
+// Get Students of a particular college
+const getGroupStudents = (groupId, callback) => {
+  if(!ObjectId.isValid(groupId))
+    return callback('Invalid College Id', 400, null);
+
+  Group.findOne({_id: groupId}, (err, group) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!group)
+      return callback('No College Found !', 400, null);
+    else{
+      User.find({type: 'Student', groups: groupId})
+        .populate('groups')
+        .populate('savedPosts')
+        .exec((err, students) => {
+          if(err)
+            return callback(err, 500, null);
+          else
+            return callback(null, 200, students);
+        });
     }
   });
 }
@@ -166,4 +190,5 @@ module.exports = {
   getCollegeDepartments,
   getCollegeClass,
   getDepartmentClass,
+  getGroupStudents
 }

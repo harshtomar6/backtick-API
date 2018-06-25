@@ -8,7 +8,8 @@ const {
   getDepartment,
   getDepartmentClass,
   getCollegeClass,
-  getCollegeDepartments 
+  getCollegeDepartments,
+  getGroupStudents 
 } = require('./groupController');
 
 const {
@@ -37,5 +38,6 @@ module.exports = {
   getUserById,
   getAllStudents,
   addSuperuser,
-  getSuperuser
+  getSuperuser,
+  getGroupStudents
 }

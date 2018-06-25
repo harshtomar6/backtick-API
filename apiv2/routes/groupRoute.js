@@ -73,4 +73,18 @@ router.get('/department/:departmentId/class', validateAdmin, (req, res, next) =>
   });
 }); 
 
+// GET '/group/college/:collegeId/student' to get all students of a college
+router.get('/college/:collegeId/student', validateAdmin, (req, res, next) => {
+  controller.getGroupStudents(req.params.collegeId, (err, status, students) => {
+    res.status(status).send({err: err, data: students});
+  });
+});
+
+// GET '/group/department/:departmentId/student' to get all students of a college
+router.get('/department/:departmentId/student', validateAdmin, (req, res, next) => {
+  controller.getGroupStudents(req.params.departmentId, (err, status, students) => {
+    res.status(status).send({err: err, data: students});
+  });
+});
+
 module.exports = router;

@@ -64,7 +64,7 @@ Retrieves All Students of a particular College
 
 |METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
 |------|--------|-----------|------|------|
-|GET|'/group/college/:collegeId/student'|SUPERUSER or ADMIN|-|PENDING|
+|GET|'/group/college/:collegeId/student'|SUPERUSER or ADMIN|-|DONE|
 
 
 ## GET `/group/college/:collegeId/staff` route
@@ -181,6 +181,15 @@ Add New Class To a particular Department
     } (optional)
   }
 ```
+
+## GET `/group/department/:departmentId/student` route
+
+Retrieves All Students of a particular Department
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|GET|'/group/department/:departmentId/student'|SUPERUSER or ADMIN|-|DONE|
+
 
 ## USERS
 
