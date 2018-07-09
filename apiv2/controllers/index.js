@@ -9,7 +9,8 @@ const {
   getDepartmentClass,
   getCollegeClass,
   getCollegeDepartments,
-  getGroupStudents 
+  getGroupStudents,
+  joinGroup 
 } = require('./groupController');
 
 const {
@@ -21,6 +22,17 @@ const {
   addSuperuser,
   getSuperuser
 } = require('./userController');
+
+const {
+  getAllPosts,
+  getPostById,
+  getPostsByPage,
+  addPost,
+  modifyPost,
+  deletePost,
+  likePost,
+  commentOnPost
+} = require('./postController');
 
 module.exports = {
   getAllColleges,
@@ -39,5 +51,14 @@ module.exports = {
   getAllStudents,
   addSuperuser,
   getSuperuser,
-  getGroupStudents
+  getGroupStudents,
+  getAllPosts,
+  getPostById,
+  getPostsByPage,
+  addPost,
+  modifyPost,
+  likePost,
+  deletePost,
+  joinGroup,
+  commentOnPost
 }

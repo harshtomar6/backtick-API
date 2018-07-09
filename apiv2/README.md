@@ -291,3 +291,86 @@ Creates new Superuser
   }
 ```
 `Only 2 Superusers are allowed`
+
+## POSTS
+
+## GET `/post` route
+
+Retrieves all Posts
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|GET|'/post'|Superuser|-|DONE|
+
+## GET `/post/page/:pageNumber?limit=`
+
+Paginate Posts.<br/>
+pageNumber can be any integer.<br/>
+limit param specifies number of posts per page.<br/>
+Default is 10
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|GET|'/post/page/:pageNumber'|Superuser|limit|DONE|
+
+## POST `/post` route
+
+Creates new posts
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|POST|'/post'|User|-|DONE|
+
+**Parameters in body**
+
+```json
+  {
+    "text": "Post Text", (required),
+    "attachment": "Array of attachment Object", (optional),
+    "groups": "Array of Group Id's", (required),
+  }
+```
+
+## PUT `/post/:postId` route
+
+Modifies a post
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|PUT|'/post/:postId'|User|-|DONE|
+
+**Parameters in body**
+
+attributes which need to be modified
+
+## DELETE `/post/:postId` route
+
+Deletes a post
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|DELETE|'/post/:postId'|User|-|DONE|
+
+## POST `/post/:postId/like` route
+
+Like a post
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|POST|'/post/:postId/like'|User|-|DONE|
+
+## POST `/post/:postId/comment` route
+
+Comment on a post
+
+|METHOD|ENDPOINT|ACCESS-TYPE|PARAMS|STATUS|
+|------|--------|-----------|------|------|
+|POST|'/post/:postId/comment'|User|-|DONE|
+
+**Parameters in body**
+
+```json
+  {
+    "text": "Comment Text", (required)
+  }
+```

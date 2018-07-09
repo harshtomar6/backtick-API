@@ -9,6 +9,7 @@ const dotenv = require('dotenv');
 const homeRoute = require('./api/routes/homeRoute');
 const groupRoute = require('./apiv2/routes/groupRoute');
 const userRoute = require('./apiv2/routes/userRoute');
+const postRoute = require('./apiv2/routes/postRoute');
 const rt = require('./socket');
 
 // Load .env variables
@@ -29,7 +30,7 @@ app.use(bodyParser.json());
 
 // Use Routes
 app.use('/', homeRoute);
-// app.use('/post', postRoute);
+app.use('/post', postRoute);
 // app.use('/college', collegeRoute);
 // app.use('/student', studentRoute);
 // app.use('/staff', staffRoute);

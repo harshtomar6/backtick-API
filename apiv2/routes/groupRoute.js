@@ -87,4 +87,11 @@ router.get('/department/:departmentId/student', validateAdmin, (req, res, next) 
   });
 });
 
+// PUT '/group/:groupId/join' to join a particular group
+router.put('/:groupId/join', validateAdmin, (req, res, next) => {
+  controller.joinGroup(req.params.groupId, req.body.user, (err, status, success) => {
+    res.status(status).send({err: err, data: success});
+  });
+});
+
 module.exports = router;

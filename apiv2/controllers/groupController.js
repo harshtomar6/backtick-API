@@ -179,6 +179,35 @@ const getGroupStudents = (groupId, callback) => {
   });
 }
 
+// Join a Group
+const joinGroup = (groupId, userId, callback) => {
+  if(!ObjectId.isValid(groupId) || !ObjectId.isValid(userId))
+    return callback('Invalid Group or User Id !')
+  
+  User.findOne({_id: userId}, (err, user) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!user)
+      return callback('No User Found !', 400, null);
+    else
+      Group.findOne({_id: groupId}, (err, group) => {
+        if(err)
+          return callback(err, 500, null);
+        else if(!group)
+          return callback("No Group Found !", 400, null);
+        else{
+          user.groups.push(groupId);
+          user.save((err, success) => {
+            if(err)
+              return callback(err, 500, null);
+            else
+              return callback(null, 200, success);
+          })
+        }
+      });
+  })
+}
+
 
 module.exports = {
   getAllColleges,
@@ -190,5 +219,6 @@ module.exports = {
   getCollegeDepartments,
   getCollegeClass,
   getDepartmentClass,
-  getGroupStudents
+  getGroupStudents,
+  joinGroup
 }

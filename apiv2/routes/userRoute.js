@@ -50,9 +50,4 @@ router.post('/admin', (req, res, next) => {
   });
 });
 
-// PUT '/user/student/join' to join a group
-router.post('/student/join', (req, res, next) => {
-
-});
-
 module.exports = router;
