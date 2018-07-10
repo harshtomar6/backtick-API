@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./../controllers');
-const { validateSuperuser } = require('./../config');
+const { validateSuperuser, validateUser } = require('./../config');
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -47,6 +47,13 @@ router.post('/su', (req, res, next) => {
 router.post('/admin', (req, res, next) => {
   controller.addAdmin(req.body, (err, status, success) => {
     res.status(status).send({err: err, data: success});
+  });
+});
+
+// PUT '/user/:userId' route to modify Student Details
+router.put('/:userId', validateUser, (req, res, next) => {
+  controller.modifyUser(req.params.userId, req.body, (err, status, success) => {
+    res.status(status).json({err: err, data: success});
   });
 });
 

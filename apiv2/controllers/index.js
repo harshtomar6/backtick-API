@@ -20,7 +20,8 @@ const {
   getUserById,
   getAllStudents,
   addSuperuser,
-  getSuperuser
+  getSuperuser,
+  modifyUser
 } = require('./userController');
 
 const {
@@ -60,5 +61,6 @@ module.exports = {
   likePost,
   deletePost,
   joinGroup,
-  commentOnPost
+  commentOnPost,
+  modifyUser
 }

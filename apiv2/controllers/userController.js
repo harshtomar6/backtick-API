@@ -172,6 +172,25 @@ const getUserById = (userId, callback) => {
   });
 }
 
+// Update Information
+let modifyUser = (id, data, callback) => {
+  if(!ObjectId.isValid(id)){
+    return callback('Invalid User ID', 400, null);
+  }
+  User.findOne({_id: id}, (err, user) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(user == null)
+      return callback('No User Found', 400, null);
+    else{
+      let update = Object.assign({}, user._doc, data);
+      User.update({_id: id}, data, (err, success) => {
+        return callback(err, 200, update);
+      });
+    }
+  });
+};
+
 
 module.exports = {
   getUserById,
@@ -180,5 +199,6 @@ module.exports = {
   addStaff,
   addSuperuser,
   getAllStudents,
-  getSuperuser
+  getSuperuser,
+  modifyUser
 }
