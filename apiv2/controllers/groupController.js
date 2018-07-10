@@ -1,6 +1,6 @@
 // Dependencies
 const { ObjectId } = require('mongodb');
-const { Group, User } = require('./../models');
+const { Group, User, Post } = require('./../models');
 
 // Get All Colleges
 const getAllColleges = (callback) => {
@@ -209,6 +209,28 @@ const joinGroup = (groupId, userId, callback) => {
 }
 
 
+// Get posts of a group
+const getGroupPosts = (groupId, callback) => {
+  if(!ObjectId.isValid(groupId))
+    return callback('Invalid Group Id', 400, null);
+
+  Post.find({groups: groupId})
+    .sort({timestamp:-1})
+    .populate({path: 'likes', select: 'name photoURL'})
+    .populate({path: 'owner', select: 'name photoURL _id'})
+    .populate({
+      path: 'comments', 
+      populate: {path: 'owner', select: 'name photoURL _id'}
+    })
+    .exec((err, posts) => {
+      if(err)
+        return callback(err, 500, null);
+      else
+        return callback(null, 200, posts);
+    })
+}
+
+
 module.exports = {
   getAllColleges,
   addCollege,
@@ -220,5 +242,6 @@ module.exports = {
   getCollegeClass,
   getDepartmentClass,
   getGroupStudents,
-  joinGroup
+  joinGroup,
+  getGroupPosts
 }

@@ -10,7 +10,8 @@ const {
   getCollegeClass,
   getCollegeDepartments,
   getGroupStudents,
-  joinGroup 
+  joinGroup,
+  getGroupPosts 
 } = require('./groupController');
 
 const {
@@ -62,5 +63,6 @@ module.exports = {
   deletePost,
   joinGroup,
   commentOnPost,
-  modifyUser
+  modifyUser,
+  getGroupPosts
 }

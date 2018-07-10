@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./../controllers');
-const { validateSuperuser, validateAdmin } = require('./../config');
+const { validateSuperuser, validateAdmin, validateUser } = require('./../config');
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -91,6 +91,13 @@ router.get('/department/:departmentId/student', validateAdmin, (req, res, next) 
 router.put('/:groupId/join', validateAdmin, (req, res, next) => {
   controller.joinGroup(req.params.groupId, req.body.user, (err, status, success) => {
     res.status(status).send({err: err, data: success});
+  });
+});
+
+// GET '/group/:groupId/post' to get all posts of a group
+router.get('/:groupId/post', validateUser, (req, res, next) => {
+  controller.getGroupPosts(req.params.groupId, (err, status, posts) => {
+    res.status(status).send({err: err, data: posts});
   });
 });
 
