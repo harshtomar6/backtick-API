@@ -33,7 +33,9 @@ const {
   modifyPost,
   deletePost,
   likePost,
-  commentOnPost
+  commentOnPost,
+  getBulletin,
+  getBulletinByPage
 } = require('./postController');
 
 module.exports = {
@@ -64,5 +66,7 @@ module.exports = {
   joinGroup,
   commentOnPost,
   modifyUser,
-  getGroupPosts
+  getGroupPosts,
+  getBulletin,
+  getBulletinByPage
 }

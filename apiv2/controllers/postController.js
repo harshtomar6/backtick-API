@@ -187,6 +187,81 @@ let commentOnPost = (id, commentData, owner, callback) => {
   });
 }
 
+// Get posts of all groups of a user (bulletin)
+const getBulletin = (userId, callback) => {
+  if(!ObjectId.isValid(userId))
+    return callback('Invalid user id', 400, null);
+  
+  User.findOne({_id: userId}, async (err, user) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!user)
+      return callback('No User Exists', 400, null);
+    else{
+      let final = await getGroupPosts(user.groups);
+      return callback(null, 200, final);
+    }
+  });
+}
+
+// Paginate Bulletin posts
+const getBulletinByPage = (userId, pageNumber, perPage, callback) => {
+  if(!ObjectId.isValid(userId))
+    return callback('Invalid user id', 400, null);
+
+  User.findOne({_id: userId}, async (err, user) => {
+    if(err)
+      return callback(err, 500, null);
+    else if(!user)
+      return callback('No User Exists', 400, null);
+    else{
+      let final = await getGroupPostsByPage(user.groups, pageNumber, perPage);
+      return callback(null, 200, final);
+    }
+  });
+}
+
+// Get Group Posts
+const getGroupPosts = async groupIds => {
+  let p = await Post.find({groups: {$in: groupIds}})
+    .sort({timestamp:-1})
+    .populate({path: 'likes', select: 'name photoURL'})
+    .populate({path: 'owner', select: 'name photoURL _id'})
+    .populate({
+      path: 'comments', 
+      populate: {path: 'owner', select: 'name photoURL _id'}
+    })
+
+  return p;
+}
+
+// Get Group Posts by Page
+const getGroupPostsByPage = async (groupIds, pageNumber, perPage) => {
+  let p = await Post.find({groups: {$in: groupIds}})
+    .sort({timestamp:-1})
+    .skip((pageNumber-1) * perPage)
+    .limit(perPage)
+    .populate({path: 'likes', select: 'name photoURL'})
+    .populate({path: 'owner', select: 'name photoURL _id'})
+    .populate({
+      path: 'comments', 
+      populate: {path: 'owner', select: 'name photoURL _id'}
+    })
+  
+  return p;
+}
+
+// Flatter 2-d Array
+const flatten = arr => {
+  let final = [];
+  for(const a of arr){
+    for(const b of a)
+      final.push(b);
+  }
+
+  return final;
+}
+
 module.exports = {
   getAllPosts,
   getPostsByPage,
@@ -195,5 +270,7 @@ module.exports = {
   modifyPost,
   deletePost,
   likePost,
-  commentOnPost
+  commentOnPost,
+  getBulletin,
+  getBulletinByPage
 }

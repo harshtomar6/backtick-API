@@ -57,4 +57,25 @@ router.put('/:userId', validateUser, (req, res, next) => {
   });
 });
 
+// GET '/user/bulletin' to fetch posts of all groups
+router.get('/bulletin', validateUser, (req, res, next) => {
+  controller.getBulletin(req.headers['x-key'], (err, status, data) => {
+    res.status(status).send({err: err, data: data});
+  })
+});
+
+// GET '/user/bulletin/:pageNumber' to paginate bulletin posts
+router.get('/bulletin/page/:pageNumber', validateUser, (req, res, next) => {
+  if(req.params.pageNumber < 1 )
+    res.status(400).send({err: 'Please Enter Valid Page Number', data: null});
+  else{
+    let perPage = req.query.limit>0 ? parseInt(req.query.limit) : 10;
+    controller.getBulletinByPage(req.headers['x-key'], req.params.pageNumber, perPage, 
+      (err, status, posts) => {
+        res.status(status).send({err: err, data: posts});
+      }
+    )
+  }
+});
+
 module.exports = router;
