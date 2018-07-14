@@ -43,10 +43,10 @@ app.use('/group', groupRoute);
 let server = require('http').Server(app);
 let io = socketio(server);
 
-// io.on('connection', (socket) => {
-//   rt.realTimePost(io, socket);
+io.on('connection', (socket) => {
+  rt.realTimePost(io, socket);
 //   rt.realTimeTest(io, socket);
-// })
+})
 
 // Listen for http requests;
 server.listen(PORT, () => {
