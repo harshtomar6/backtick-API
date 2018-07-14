@@ -1,5 +1,5 @@
 // Dependencies
-const controller = require('./api/controllers');
+const controller = require('./apiv2/controllers');
 
 // Real Time Post functions
 let clients = [];
