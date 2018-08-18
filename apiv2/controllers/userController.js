@@ -142,7 +142,7 @@ const getSuperuser = (superuserId, callback) => {
 
   Superuser.findOne({_id: superuserId}, (err, superuser) => {
     if(err)
-      return calback(err, 500, null);
+      return callback(err, 500, null);
     else if(!superuser)
       return callback("No SuperUser Exists",404, null);
     else

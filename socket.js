@@ -10,11 +10,12 @@ const realTimePost = (io, socket) => {
 
   // Like Post
   socket.on('/post/like', data => {
-    controller.likePost(data.postId, data.userId, (err, success) => {
+    
+    controller.likePost(data.postId, data.user._id, (err, success) => {
       if(err)
-        io.emit('like-err', err);
+        socket.emit('like-err', err);
       else
-        io.emit('like-success', success);
+        socket.emit('like-success', success);
     })
   });
 
@@ -27,6 +28,16 @@ const realTimePost = (io, socket) => {
         io.emit('save-success', succcess);
     });
   });
+
+  // Comment on Post
+  socket.on('/post/comment', data => {
+    controller.commentOnPost(data.postId, data.comment, data.userId, (err, status, success) => {
+      if(err)
+        io.emit('comment-err', err);
+      else
+        io.emit('comment-success', data);
+    });
+  })
 } 
 
 // Test Post function
